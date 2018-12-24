@@ -1,0 +1,45 @@
+.message1,
+.message2 {
+    float:right;
+    width: auto;
+    /*width: 200px;*/
+    /*height: 80px;*/
+    margin: 5px;
+    background-color: #aeff72;
+    border-bottom-color: #aeff72;
+    /*为了给after伪元素自动继承*/
+
+    font-size: 16px;
+    line-height: 18px;
+    padding: 5px 12px 5px 12px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    position: relative;
+    word-break: break-all;
+}
+
+.message1::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -5px;
+    width: 15px;
+    height: 15px;
+    margin-top: -10px;
+    background: inherit;
+    /*自动继承父元素的背景*/
+    transform: rotate(45deg);
+}
+
+.message2::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -5px;
+    width: 15px;
+    height: 15px;
+    margin-top: -10px;
+    background: inherit;
+    /*自动继承父元素的背景*/
+    transform: rotate(45deg);
+}
