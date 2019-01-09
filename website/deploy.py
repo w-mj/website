@@ -1,4 +1,5 @@
 import hmac
+import os
 from hashlib import sha1
 from .secrets import github_webhook_secret
 
@@ -31,6 +32,7 @@ def deploy(request):
     if event_type == 'ping':
         return HttpResponse('pong!')
     if event_type == 'push':
+        os.system('cd /web-server/cloud-server/ && bash deploy.sh')
         return HttpResponse('deploy.')
 
     return HttpResponseServerError('Operation not supported.', status=502)
