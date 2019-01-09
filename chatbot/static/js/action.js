@@ -20,3 +20,7 @@ function sendMessage() {
         }
     });
 }
+
+function separation() {
+
+}

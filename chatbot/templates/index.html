@@ -59,8 +59,16 @@
                 </div>
             </div>
         </div>
-
-        <div class="tab-pane fade" id="separation" role="tabpanel" aria-labelledby="separation-tab">分词</div>
+        <!-- 分词 -->
+        <div class="tab-pane fade" id="separation" role="tabpanel" aria-labelledby="separation-tab">
+            <form>
+                <div class="form-group form">
+                    <label for="to-separation">请输入句子</label>
+                    <textarea class="form-control" id="to-separation" rows="3"></textarea>
+                </div>
+                <button class="btn btn-primary" type="button" onclick="separation()">确定</button>
+            </form>
+        </div>
         <div class="tab-pane fade" id="synonym" role="tabpanel" aria-labelledby="synonym-tab">近义词</div>
         <div class="tab-pane fade" id="sentiment" role="tabpanel" aria-labelledby="sentiment-tab">情感</div>
     </div>
