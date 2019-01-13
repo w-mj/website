@@ -1,9 +1,14 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
+import socket
 
 
 def index(request):
-    return render(request, 'index.html')
+    if socket.gethostname() == 'DESKTOP-589NS7B':
+        server_url = 'http://127.0.0.1:8000/chat'
+    else:
+        server_url = 'http://fun.alphamj.cn/chat'
+    return render(request, 'index.html', {'server_url': server_url})
 
 
 def chat(request):

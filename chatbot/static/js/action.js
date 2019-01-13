@@ -1,13 +1,15 @@
 
-
+let server_url = null;
 function sendMessage() {
+    if (server_url === null)
+        server_url = $('#server_url').html();
     let box = $("#input-box");
     let text = box.val();
     box.val('');
-    console.log("say: " + text);
+    console.log("say: " + text + " to: " + server_url);
     $("#chat-box").append("<li class=\"list-group-item message1\">" + text + "</li>");
     $.ajax({
-        url: 'http://127.0.0.1:8000/chat',
+        url: server_url,
         type: 'GET',
         data: {tk:'1', text:text},
         dataType: 'json',
