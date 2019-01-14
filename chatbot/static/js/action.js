@@ -24,5 +24,19 @@ function sendMessage() {
 }
 
 function separation() {
-
+    let box = $("#to-separation");
+    t = box.val();
+    $.ajax({
+        url: 'separation',
+        type: 'GET',
+        data: {"text": t},
+        success: function (response) {
+            console.log(response);
+            box.val(response);
+        },
+        error: function (err) {
+            console.log("separation server error");
+            console.log(err);
+        }
+    });
 }

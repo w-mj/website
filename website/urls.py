@@ -22,5 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', chatbot.views.index),
     path('chat', chatbot.views.chat),
+    path('separation', chatbot.views.separation),
     path('deploy', deploy)
 ]
