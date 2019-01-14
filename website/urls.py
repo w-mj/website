@@ -21,6 +21,9 @@ from .deploy import deploy
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', chatbot.views.index),
+    path('login', chatbot.views.login),
+    path('signup', chatbot.views.signup),
+
     path('chat', chatbot.views.chat),
     path('separation', chatbot.views.separation),
     path('deploy', deploy)

@@ -5,11 +5,15 @@ import requests
 
 
 def index(request):
-    if socket.gethostname() == 'DESKTOP-589NS7B':
-        server_url = 'http://127.0.0.1:8000/chat'
-    else:
-        server_url = 'http://fun.alphamj.cn/chat'
-    return render(request, 'index.html', {'server_url': server_url})
+    return render(request, 'index.html')
+
+
+def login(request):
+    return render(request, 'login.html')
+
+
+def signup(request):
+    return JsonResponse({'result': 'success', 'msg':'123'})
 
 
 def chat(request):
