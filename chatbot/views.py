@@ -3,9 +3,15 @@ from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 import socket
 import requests
 
+from chatbot.ChatUser import ChatUser
+
 
 def index(request):
-    return render(request, 'index.html')
+    saved_id = request.COOKIES.get("uid", None)
+    current_user = None
+    if saved_id is not None:
+        current_user = ChatUser()
+    return render(request, 'index.html', {'current_user': current_user})
 
 
 def login(request):

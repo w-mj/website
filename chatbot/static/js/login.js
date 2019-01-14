@@ -1,4 +1,3 @@
-
 function uperr(msg) {
     let box = $("#signin-fail");
     box.html(msg);
@@ -36,6 +35,7 @@ function signup() {
                 let box = $("#signin-success");
                 box.html("注册成功");
                 box.show();
+                Cookies.set('uid', 1);
                 setTimeout(function () {
                     window.location.href='/';
                 }, 3000);
@@ -49,3 +49,5 @@ function signup() {
         }
     })
 }
+
+

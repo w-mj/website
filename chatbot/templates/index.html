@@ -12,7 +12,11 @@
         <div class="jumbotron col-md-12">
             <h1 class="display-4">NLP TOOLS</h1>
             <p class="lead">快速、智能、准确的多功能私人在线助手。</p>
-            <a href="login"><button class="btn btn-outline-success" type="button">登陆/注册</button></a>
+            {% if current_user == None %}
+                <a href="login"><button class="btn btn-outline-success" type="button">登陆/注册</button></a>
+            {% else %}
+                <button id="logout-btn" class="btn btn-outline-success" type="button">{{ current_user.name }}</button>
+            {% endif %}
         </div>
     </div>
     <div class="row">
@@ -84,9 +88,9 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
 <link rel="stylesheet" type="text/css" href="{% static 'css/message_bubble.css' %}"/>
 <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+<script type="text/javascript" src="{% static 'js/js.cookie-2.2.0.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/action.js' %}"></script>
-
 
 </html>

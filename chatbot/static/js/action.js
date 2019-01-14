@@ -11,7 +11,7 @@ function sendMessage() {
         data: {tk:'1', text:text},
         dataType: 'json',
         success: function (response) {
-            $("#chat-box").append("<li class=\"list-group-item message2\">" + response.text + "</li>")
+            $("#chat-box").append("<li class=\"list-group-item message2\">" + response.text + "</li>");
         },
         error: function (err) {
             console.log("chat server error");
@@ -37,3 +37,20 @@ function separation() {
         }
     });
 }
+
+$(document).ready(function () {
+    console.log("ready");
+    let btn = $("#logout-btn");
+    btn.click(function () {
+        console.log("log out");
+        Cookies.remove('uid');
+        window.location.href='/';
+    });
+    let name = "";
+    btn.hover(function () {
+        name = btn.html();
+        btn.html("退出登陆");
+    }, function () {
+        btn.html(name);
+    })
+});
