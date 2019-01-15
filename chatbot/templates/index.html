@@ -49,7 +49,17 @@
             <!-- 对话列表 -->
 
             <ul class="list-group" id="chat-box">
-
+                {% for item in history %}
+                    {% if item.is_response %}
+                        <li class="list-group-item message1">
+                            {{ item.text }}
+                        </li>
+                    {% else %}
+                        <li class="list-group-item message2">
+                            {{ item.text }}
+                        </li>
+                    {% endif %}
+                {% endfor %}
             </ul>
             <!-- 输入框 -->
             <div style="padding-top: 20px">
@@ -76,7 +86,7 @@
     </div>
     </div>
 </div>
-
+{% csrf_token %}
 </body>
 
 {% load staticfiles %}

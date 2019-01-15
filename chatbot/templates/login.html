@@ -40,7 +40,6 @@
             <!-- 注册 -->
             <div class="tab-pane fade show active" id="signup" role="tabpanel" aria-labelledby="signup-tab">
                 <form>
-                    {% csrf_token %}
                     <div class="form-group">
                         <label for="signup-name">用户名</label>
                         <input type="text" class="form-control" id="signup-name" placeholder="请输入用户名">
@@ -67,7 +66,6 @@
             <!-- 登陆 -->
             <div class="tab-pane fade" id="signin" role="tabpanel" aria-labelledby="signin-tab">
                 <form>
-                    {% csrf_token %}
                     <div class="form-group">
                         <label for="signin-name">用户名</label>
                         <input type="text" class="form-control" id="signin-name" placeholder="请输入用户名">
@@ -91,7 +89,7 @@
 </div>
 
 <div id="r"></div>
-
+{% csrf_token %}
 </body>
 
 {% load staticfiles %}

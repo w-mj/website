@@ -7,8 +7,8 @@ function sendMessage() {
     $("#chat-box").append("<li class=\"list-group-item message1\">" + text + "</li>");
     $.ajax({
         url: 'chat',
-        type: 'GET',
-        data: {tk:'1', text:text},
+        type: 'POST',
+        data: {text:text, csrfmiddlewaretoken: Cookies.get('csrftoken')},
         dataType: 'json',
         success: function (response) {
             $("#chat-box").append("<li class=\"list-group-item message2\">" + response.text + "</li>");

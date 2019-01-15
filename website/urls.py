@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 import chatbot.views
 import chatbot.auth
+import chatbot.func
 from .deploy import deploy
 
 urlpatterns = [
@@ -27,7 +28,7 @@ urlpatterns = [
     path('signin', chatbot.auth.signin),
     path('logout', chatbot.auth.logout),
 
-    path('chat', chatbot.views.chat),
-    path('separation', chatbot.views.separation),
+    path('chat', chatbot.func.chat),
+    path('separation', chatbot.func.separation),
     path('deploy', deploy)
 ]
