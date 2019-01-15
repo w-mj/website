@@ -1,6 +1,4 @@
 from django.shortcuts import render
-from .models import ChatHistory
-from django.contrib.auth.models import User
 
 
 def index(request):
