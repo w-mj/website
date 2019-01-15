@@ -2,13 +2,9 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 import requests
 
-from chatbot.ChatUser import ChatUser
-
 
 def index(request):
-    saved_id = request.COOKIES.get("uid", None)
-    current_user = request.user
-    return render(request, 'index.html', {'current_user': current_user})
+    return render(request, 'index.html', {'current_user': request.user})
 
 
 def login(request):
