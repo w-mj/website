@@ -16,13 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import chatbot.views
+import chatbot.auth
 from .deploy import deploy
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', chatbot.views.index),
     path('login', chatbot.views.login),
-    path('signup', chatbot.views.signup),
+    path('signup', chatbot.auth.signup),
+    path('signin', chatbot.auth.signin),
+    path('logout', chatbot.auth.logout),
 
     path('chat', chatbot.views.chat),
     path('separation', chatbot.views.separation),

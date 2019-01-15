@@ -12,10 +12,10 @@
         <div class="jumbotron col-md-12">
             <h1 class="display-4">NLP TOOLS</h1>
             <p class="lead">快速、智能、准确的多功能私人在线助手。</p>
-            {% if current_user == None %}
-                <a href="login"><button class="btn btn-outline-success" type="button">登陆/注册</button></a>
+            {% if current_user.is_authenticated %}
+                <button id="logout-btn" class="btn btn-outline-success" type="button">{{ current_user.username }}</button>
             {% else %}
-                <button id="logout-btn" class="btn btn-outline-success" type="button">{{ current_user.name }}</button>
+                <a href="login"><button class="btn btn-outline-success" type="button">登陆/注册</button></a>
             {% endif %}
         </div>
     </div>

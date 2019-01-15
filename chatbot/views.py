@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
-import socket
 import requests
 
 from chatbot.ChatUser import ChatUser
@@ -8,18 +7,12 @@ from chatbot.ChatUser import ChatUser
 
 def index(request):
     saved_id = request.COOKIES.get("uid", None)
-    current_user = None
-    if saved_id is not None:
-        current_user = ChatUser()
+    current_user = request.user
     return render(request, 'index.html', {'current_user': current_user})
 
 
 def login(request):
     return render(request, 'login.html')
-
-
-def signup(request):
-    return JsonResponse({'result': 'success', 'msg':'123'})
 
 
 def chat(request):

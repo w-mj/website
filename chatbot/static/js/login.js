@@ -1,5 +1,5 @@
 function uperr(msg) {
-    let box = $("#signin-fail");
+    let box = $("#signup-fail");
     box.html(msg);
     box.show();
 }
@@ -25,20 +25,18 @@ function signup() {
         method: "POST",
         data: {
             csrfmiddlewaretoken: Cookies.get('csrftoken'),
-            name: name,
+            username: name,
             password: psw1
         },
         dataType: 'json',
         success: function (response) {
             console.log(response);
             if (response.result === 'success') {
-                let box = $("#signin-success");
-                box.html("注册成功");
-                box.show();
-                Cookies.set('uid', 1);
+                $("#signup-success").show();
+                Cookies.set('uid', response.uid);
                 setTimeout(function () {
                     window.location.href='/';
-                }, 3000);
+                }, 2000);
             } else {
                 uperr(response.msg)
             }
@@ -50,4 +48,49 @@ function signup() {
     })
 }
 
+
+function inerr(msg) {
+    let box = $("#signin-fail");
+    box.html(msg);
+    box.show();
+}
+
+function signin() {
+    let name = $("#signin-name").val();
+    let psw1 = $("#signin-psw1").val();
+    if (name === "") {
+        inerr("必须填写用户名");
+        return
+    }
+    if (psw1 === "") {
+        inerr("必须填写密码");
+        return
+    }
+        $.ajax({
+        url: "signin",
+        method: "POST",
+        data: {
+            csrfmiddlewaretoken: Cookies.get('csrftoken'),
+            username: name,
+            password: psw1
+        },
+        dataType: 'json',
+        success: function (response) {
+            console.log(response);
+            if (response.result === 'success') {
+                $("#signin-success").show();
+                Cookies.set('uid', response.uid);
+                setTimeout(function () {
+                    window.location.href='/';
+                }, 2000);
+            } else {
+                inerr(response.msg)
+            }
+        },
+        error: function (err) {
+            console.log(err);
+            inerr("内部错误");
+        }
+    })
+}
 
