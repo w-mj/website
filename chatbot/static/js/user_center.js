@@ -33,9 +33,7 @@ function changePsw() {
                     window.location.href='/';
                 }, 2000);
             } else {
-                let t = $("#fail");
-                t.html(response.msg);
-                t.show();
+                $("#fail").html(response.msg).show();
             }
         },
         error: function (err) {

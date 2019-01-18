@@ -45,8 +45,9 @@ def changePsw(request):
     if not new_psw:
         return JsonResponse({'result': 'error', 'msg': 'no new password'})
 
-    user = auth.authenticate(username=request.user.username, password=old_psw)
-    if user is None:
+    user = request.user
+    if not user.check_password(old_psw):
         return JsonResponse({'result': 'error', 'msg': '旧密码错误'})
     user.set_password(new_psw)
+    user.save()
     return JsonResponse({'result': 'success', 'uid': user.id})
