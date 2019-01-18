@@ -55,19 +55,19 @@
             <div class="tab-pane fade show active" id="chat" role="tabpanel" aria-labelledby="chat-tab">
                 <!-- 对话列表 -->
 
-                <ul class="list-group" id="chat-box">
+                <div id="chat-box">
                     {% for item in history %}
                         {% if item.is_response %}
-                            <li class="list-group-item message1">
+                            <div class="list-group-item message2">
                                 {{ item.text }}
-                            </li>
+                            </div>
                         {% else %}
-                            <li class="list-group-item message2">
+                            <div class="list-group-item message1">
                                 {{ item.text }}
-                            </li>
+                            </div>
                         {% endif %}
                     {% endfor %}
-                </ul>
+                </div>
                 <!-- 输入框 -->
                 <div style="padding-top: 20px">
                     <div class="input-group mb-3">

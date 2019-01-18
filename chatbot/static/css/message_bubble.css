@@ -1,9 +1,27 @@
-.message1,
-.message2 {
+.message1 {
+    clear: both;
     float:right;
-    width: auto;
-    /*width: 200px;*/
+    text-align: right;
+    width: content-box;
+    /*width: auto;*/
     /*height: 80px;*/
+    margin: 5px;
+    background-color: #aeff72;
+    border-bottom-color: #aeff72;
+    /*为了给after伪元素自动继承*/
+
+    font-size: 16px;
+    line-height: 18px;
+    padding: 5px 12px 5px 12px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    position: relative;
+    word-break: break-all;
+}
+.message2 {
+    clear: both;
+    float:left;
+    width: content-box;
     margin: 5px;
     background-color: #aeff72;
     border-bottom-color: #aeff72;
