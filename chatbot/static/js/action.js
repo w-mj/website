@@ -4,14 +4,14 @@ function sendMessage() {
     let text = box.val();
     box.val('');
     console.log("say: " + text);
-    $("#chat-box").append("<li class=\"list-group-item message1\">" + text + "</li>");
+    $("#chat-box").append("<div class=\" message1\">" + text + "</div>");
     $.ajax({
         url: 'chat',
         type: 'POST',
         data: {text:text, csrfmiddlewaretoken: Cookies.get('csrftoken')},
         dataType: 'json',
         success: function (response) {
-            $("#chat-box").append("<li class=\"list-group-item message2\">" + response.text + "</li>");
+            $("#chat-box").append("<div class=\"message2\">" + response.text + "</div>");
         },
         error: function (err) {
             console.log("chat server error");
@@ -59,5 +59,12 @@ $(document).ready(function () {
         btn.html("退出登陆");
     }, function () {
         btn.html(name);
-    })
+    });
+
+
+    $("body").keydown(function() {
+             if (event.keyCode === 13) {//keyCode=13是回车键
+                 sendMessage();
+             }
+         });
 });
