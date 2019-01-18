@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Bot</title>
+</head>
+<body>
+
+<div class="container">
+    {% include 'nav.html' %}
+
+    <div class="row">
+        <div class="col-3">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab"
+                   aria-controls="v-pills-home" aria-selected="true">个人信息</a>
+                <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
+                   aria-controls="v-pills-profile" aria-selected="false">修改密码</a>
+
+            </div>
+        </div>
+        <div class="col-1">&nbsp;</div>
+        <div class="col-7">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
+                     aria-labelledby="v-pills-home-tab">
+                    <div class="card" style="width: 18rem;">
+                      <img src="" class="card-img-top" alt="...">
+                      <div class="card-body">
+                        <a href="#" class="btn btn-primary">上传新头像</a>
+                      </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <form>
+                        <div class="form-group">
+                            <label for="signup-name">请输入旧密码</label>
+                            <input type="password" class="form-control" id="old-psw" placeholder="请输入旧密码">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-psw1">请输入新密码</label>
+                            <input type="password" class="form-control" id="new-psw1"
+                                   placeholder="请输入密码">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-psw2">请再次输入新密码</label>
+                            <input type="password" class="form-control" id="new-psw2"
+                                   placeholder="请再次输入密码">
+                        </div>
+                        <div id="success" class="alert alert-success" role="alert" style="display: none;">
+                            修改密码成功
+                        </div>
+                        <div id="fail" class="alert alert-danger" role="alert" style="display: none;">
+                            A simple success alert—check it out!
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="changePsw()">修改密码</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="r"></div>
+{% csrf_token %}
+</body>
+
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}"/>
+<script type="text/javascript" src="{% static 'js/js.cookie-2.2.0.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/user_center.js' %}"></script>
+</html>

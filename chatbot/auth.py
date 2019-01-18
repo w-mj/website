@@ -35,3 +35,18 @@ def signin(request):
 def logout(request):
     auth.logout(request)
     return JsonResponse({'result': 'success'})
+
+
+def changePsw(request):
+    old_psw = request.POST.get('old_psw')
+    new_psw = request.POST.get('new_psw')
+    if not old_psw:
+        return JsonResponse({'result': 'error', 'msg': 'no old password'})
+    if not new_psw:
+        return JsonResponse({'result': 'error', 'msg': 'no new password'})
+
+    user = auth.authenticate(username=request.user.username, password=old_psw)
+    if user is None:
+        return JsonResponse({'result': 'error', 'msg': '旧密码错误'})
+    user.set_password(new_psw)
+    return JsonResponse({'result': 'success', 'uid': user.id})

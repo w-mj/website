@@ -44,29 +44,29 @@ function separation() {
 $(document).ready(function () {
     console.log("ready");
     let btn = $("#logout-btn");
-    btn.click(function () {
-        $.ajax({
-            url: 'logout',
-            method: 'POST',
-            data: {csrfmiddlewaretoken: Cookies.get('csrftoken')},
-            success: function () {
-                console.log("log out");
-                Cookies.remove('uid');
-                window.location.href='/';
-            }
-        });
-    });
+    // btn.click(function () {
+    //     $.ajax({
+    //         url: 'logout',
+    //         method: 'POST',
+    //         data: {csrfmiddlewaretoken: Cookies.get('csrftoken')},
+    //         success: function () {
+    //             console.log("log out");
+    //             Cookies.remove('uid');
+    //             window.location.href='/';
+    //         }
+    //     });
+    // });
     let name = "";
     btn.hover(function () {
         name = btn.html();
-        btn.html("退出登陆");
+        btn.html("个人中心");
     }, function () {
         btn.html(name);
     });
 
 
     $("body").keydown(function() {
-        if (event.keyCode === 13) {//keyCode=13是回车键
+        if (event.keyCode === 13) { //keyCode=13是回车键
             sendMessage();
         }
     });

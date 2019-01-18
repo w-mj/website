@@ -11,3 +11,7 @@ def index(request):
 
 def login(request):
     return render(request, 'login.html')
+
+
+def user_center(request):
+    return render(request, 'user_center.html', {'current_user': request.user})

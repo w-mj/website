@@ -24,9 +24,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', chatbot.views.index),
     path('login', chatbot.views.login),
+    path('user', chatbot.views.user_center),
     path('signup', chatbot.auth.signup),
     path('signin', chatbot.auth.signin),
     path('logout', chatbot.auth.logout),
+    path('changepsw', chatbot.auth.changePsw),
 
     path('chat', chatbot.func.chat),
     path('separation', chatbot.func.separation),
