@@ -33,6 +33,7 @@ function signup() {
             console.log(response);
             if (response.result === 'success') {
                 $("#signup-success").show();
+                $("#signup-fail").hide();
                 Cookies.set('uid', response.uid);
                 setTimeout(function () {
                     window.location.href='/';
@@ -79,6 +80,7 @@ function signin() {
             console.log(response);
             if (response.result === 'success') {
                 $("#signin-success").show();
+                $("#signin-fail").hide();
                 Cookies.set('uid', response.uid);
                 setTimeout(function () {
                     window.location.href='/';

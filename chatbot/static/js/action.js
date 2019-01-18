@@ -73,3 +73,4 @@ $(document).ready(function () {
     let chat_box = $("#chat-box");
     chat_box.scrollTop(chat_box[0].scrollHeight);
 });
+
