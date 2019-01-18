@@ -2,16 +2,19 @@
 function sendMessage() {
     let box = $("#input-box");
     let text = box.val();
+    let chat_box = $("#chat-box");
     box.val('');
     console.log("say: " + text);
-    $("#chat-box").append("<div class=\" message1\">" + text + "</div>");
+    chat_box.append("<div class=\" message1\">" + text + "</div>");
+    chat_box.scrollTop(chat_box[0].scrollHeight);
     $.ajax({
         url: 'chat',
         type: 'POST',
         data: {text:text, csrfmiddlewaretoken: Cookies.get('csrftoken')},
         dataType: 'json',
         success: function (response) {
-            $("#chat-box").append("<div class=\"message2\">" + response.text + "</div>");
+            chat_box.append("<div class=\"message2\">" + response.text + "</div>");
+            chat_box.scrollTop(chat_box[0].scrollHeight);
         },
         error: function (err) {
             console.log("chat server error");
@@ -63,8 +66,10 @@ $(document).ready(function () {
 
 
     $("body").keydown(function() {
-             if (event.keyCode === 13) {//keyCode=13是回车键
-                 sendMessage();
-             }
-         });
+        if (event.keyCode === 13) {//keyCode=13是回车键
+            sendMessage();
+        }
+    });
+    let chat_box = $("#chat-box");
+    chat_box.scrollTop(chat_box[0].scrollHeight);
 });
