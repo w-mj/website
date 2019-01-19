@@ -49,9 +49,10 @@ $(document).ready(function () {
         language: 'zh',
         theme: 'fas',
         allowedFileExtensions: ['jpg', 'png', 'gif'],
-        resizeImage: true,
+        showClose: false,
         maxFileCount: 1,
         autoReplace: true,
+        maxFileSize: 1024,
         uploadUrl: 'uploadavatar',
         uploadExtraData: {csrfmiddlewaretoken: Cookies.get('csrftoken')}
     }).on('fileuploaded', function(event, data, previewId, index) {
