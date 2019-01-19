@@ -7,3 +7,8 @@ class ChatHistory(models.Model):
     is_response = models.BooleanField()
     text = models.TextField()
     time = models.DateTimeField(auto_now=True)
+
+
+class Avatar(models.Model):
+    user = models.OneToOneField(to=User, on_delete=models.CASCADE)
+    avatar = models.ImageField(default='avatar/default.png', upload_to='avatar')

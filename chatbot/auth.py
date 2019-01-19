@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
+from .models import Avatar
 
 
 def signup(request):
@@ -14,6 +15,10 @@ def signup(request):
     if len(query) > 0:
         return JsonResponse({'result': 'error', 'msg': '该用户已经存在'})
     user = User.objects.create_user(username=username, password=password)
+    auth.login(request, user)
+    default_avatar = Avatar()
+    default_avatar.user = user
+    default_avatar.save()
     return JsonResponse({'result': 'success', 'uid': user.id})
 
 

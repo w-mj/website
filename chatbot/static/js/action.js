@@ -44,18 +44,6 @@ function separation() {
 $(document).ready(function () {
     console.log("ready");
     let btn = $("#logout-btn");
-    // btn.click(function () {
-    //     $.ajax({
-    //         url: 'logout',
-    //         method: 'POST',
-    //         data: {csrfmiddlewaretoken: Cookies.get('csrftoken')},
-    //         success: function () {
-    //             console.log("log out");
-    //             Cookies.remove('uid');
-    //             window.location.href='/';
-    //         }
-    //     });
-    // });
     let name = "";
     btn.hover(function () {
         name = btn.html();
