@@ -1,5 +1,4 @@
 .message1 {
-    clear: both;
     float:right;
     text-align: right;
     width: content-box;
@@ -19,8 +18,7 @@
     word-break: break-all;
 }
 .message2 {
-    clear: both;
-    float:left;
+    float: left;
     width: content-box;
     margin: 5px;
     background-color: #aeff72;

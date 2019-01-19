@@ -51,11 +51,21 @@
                 <div id="chat-box">
                     {% for item in history %}
                         {% if item.is_response %}
-                            <div class="list-group-item message2">
-                                {{ item.text }}
+                            <div class="chat-item">
+                                <div class="avatar2">
+                                    <img src="{% static 'img/me.jpg' %}" class="avatar-img">
+                                </div>
+                                <div class="message2">
+                                    {{ item.text }}
+                                </div>
                             </div>
                         {% else %}
-                            <div class="list-group-item message1">
+                            <div class="chat-item">
+                                <div class="avatar1">
+                                    <img src="{{ current_user.avatar.avatar.url }}" class="avatar-img">
+                                </div>
+                            </div>
+                            <div class="message1">
                                 {{ item.text }}
                             </div>
                         {% endif %}
@@ -87,6 +97,16 @@
             <div class="tab-pane fade" id="synonym" role="tabpanel" aria-labelledby="synonym-tab">近义词</div>
             <div class="tab-pane fade" id="sentiment" role="tabpanel" aria-labelledby="sentiment-tab">情感</div>
         </div>
+    </div>
+</div>
+<div id="response-template" style="display: none;">
+    <div class="avatar">
+        <img src="{% static 'img/me.jpg' %}" class="avatar-img">
+    </div>
+</div>
+<div id="say-template" style="display: none;">
+    <div class="avatar">
+        <img src="{% static 'img/me.jpg' %}" class="avatar-img">
     </div>
 </div>
 {% csrf_token %}

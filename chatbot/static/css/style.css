@@ -11,3 +11,22 @@
     max-height: 600px;
     border: solid #e1e1e1;
 }
+
+.avatar2 {
+    float: left;
+    padding-right: 10px;
+}
+
+.avatar1 {
+    float: right;
+    padding-left: 10px;
+}
+
+.avatar-img {
+    height: 30px;
+    width: 30px;
+}
+
+.chat-item {
+    clear: both;
+}
