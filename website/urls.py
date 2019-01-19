@@ -31,6 +31,7 @@ urlpatterns = [
     path('signin', chatbot.auth.signin),
     path('logout', chatbot.auth.logout),
     path('changepsw', chatbot.auth.changePsw),
+    path('uploadavatar', chatbot.auth.changeAvatar),
 
     path('chat', chatbot.func.chat),
     path('separation', chatbot.func.separation),

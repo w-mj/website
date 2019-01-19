@@ -43,3 +43,15 @@ function changePsw() {
         }
     })
 }
+
+$(document).ready(function () {
+    $("#upload-avatar").fileinput({
+        theme: "fas",
+        language: 'zh',
+        allowedFileExtension: ['jpg', 'png'],
+        resizeImage: true,
+        maxFileCount: 1,
+        uploadUrl: 'uploadavatar',
+        uploadExtraData: {csrfmiddlewaretoken: Cookies.get('csrftoken')}
+    });
+});

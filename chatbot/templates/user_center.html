@@ -12,6 +12,12 @@
     <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/user_center.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'css/fileinput.min.css'%}" media="all" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/awesomefont.css' %}">
+    <script src="{% static 'js/file_input/piexif.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/file_input/fileinput.min.js' %}"></script>
+    <script src="{% static 'js/file_input/zh.js' %}"></script>
 </head>
 <body>
 
@@ -39,6 +45,7 @@
                         <a href="#" class="btn btn-primary">上传新头像</a>
                       </div>
                     </div>
+                    <input id="upload-avatar" type="file" name="upload-avatar">
                 </div>
                 <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
                     <form>

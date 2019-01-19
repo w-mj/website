@@ -1,10 +1,12 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib import auth
 from django.contrib.auth.models import User
 from .models import Avatar
 
 
 def signup(request):
+    if request.method != 'POST':
+        return HttpResponseForbidden()
     username = request.POST.get('username')
     password = request.POST.get('password')
     if not username:
@@ -23,6 +25,8 @@ def signup(request):
 
 
 def signin(request):
+    if request.method != 'POST':
+        return HttpResponseForbidden()
     username = request.POST.get('username')
     password = request.POST.get('password')
     if not username:
@@ -38,11 +42,15 @@ def signin(request):
 
 
 def logout(request):
+    if request.method != 'POST':
+        return HttpResponseForbidden()
     auth.logout(request)
     return JsonResponse({'result': 'success'})
 
 
 def changePsw(request):
+    if request.method != 'POST':
+        return HttpResponseForbidden()
     old_psw = request.POST.get('old_psw')
     new_psw = request.POST.get('new_psw')
     if not old_psw:
@@ -56,3 +64,19 @@ def changePsw(request):
     user.set_password(new_psw)
     user.save()
     return JsonResponse({'result': 'success', 'uid': user.id})
+
+
+def changeAvatar(request):
+    if request.method != 'POST':
+        return HttpResponseForbidden()
+
+    image = request.FILES.get("upload-avatar", None)
+    if image is None:
+        return JsonResponse({'error': 'No File'})
+
+    # 修改文件名字
+    image.name = str(request.user) + '.' + image.name.split('.')[-1]
+    a = request.user.avatar
+    a.avatar = image
+    a.save()
+    return JsonResponse({})
