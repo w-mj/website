@@ -46,12 +46,15 @@ function changePsw() {
 
 $(document).ready(function () {
     $("#upload-avatar").fileinput({
-        theme: "fas",
         language: 'zh',
-        allowedFileExtension: ['jpg', 'png'],
+        theme: 'fas',
+        allowedFileExtensions: ['jpg', 'png', 'gif'],
         resizeImage: true,
         maxFileCount: 1,
+        autoReplace: true,
         uploadUrl: 'uploadavatar',
         uploadExtraData: {csrfmiddlewaretoken: Cookies.get('csrftoken')}
+    }).on('fileuploaded', function(event, data, previewId, index) {
+        window.location.reload();
     });
 });
