@@ -68,3 +68,15 @@ $(document).ready(function () {
         window.changepsw_obj = captchaObj;
     });
 });
+
+
+function delete_history() {
+    $.ajax({
+        url: 'deletehistory',
+        method: 'POST',
+        data: {csrfmiddlewaretoken: Cookies.get('csrftoken')},
+        success: function () {
+            $("#delete-success").show();
+        }
+    })
+}

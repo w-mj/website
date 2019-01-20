@@ -33,6 +33,7 @@ urlpatterns = [
     path('logout', chatbot.auth.logout),
     path('changepsw', chatbot.auth.changePsw),
     path('uploadavatar', chatbot.auth.changeAvatar),
+    path('deletehistory', chatbot.auth.deleteHistory),
 
     path('chat', chatbot.func.chat),
     path('separation', chatbot.func.separation),

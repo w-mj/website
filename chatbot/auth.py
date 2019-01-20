@@ -1,7 +1,7 @@
 from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib import auth
 from django.contrib.auth.models import User
-from .models import Avatar
+from .models import Avatar, ChatHistory
 from website.captcha import pc_validate
 
 
@@ -86,4 +86,9 @@ def changeAvatar(request):
     a = request.user.avatar
     a.avatar = image
     a.save()
+    return JsonResponse({})
+
+
+def deleteHistory(request):
+    ChatHistory.objects.filter(user=request.user).delete()
     return JsonResponse({})

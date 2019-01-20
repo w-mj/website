@@ -42,6 +42,27 @@
     </div>
 </div>
 
+<div class="modal fade" id="delete-history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">确认删除</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        您确定要删除聊天记录吗？此操作不可撤销。
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                onclick="delete_history()">确认删除</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
     {% include 'nav.html' %}
 
@@ -59,13 +80,18 @@
             <div class="tab-content" id="v-pills-tabContent">
                 <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel"
                      aria-labelledby="v-pills-home-tab">
+                    <h3>修改头像</h3>
                     <div class="card" style="width: 18rem;">
                       <img src="{{ current_user.avatar.avatar.url }}" class="card-img-top" alt="...">
                       <div class="card-body">
                         <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#upload-modal">上传新头像</a>
                       </div>
                     </div>
-{#                    <input id="upload-avatar" type="file" name="upload-avatar">#}
+                    <hr class="my-4">
+                    <h3>聊天记录</h3>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-history">
+                        删除聊天记录
+                    </button>
 
                 </div>
                 <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
@@ -95,6 +121,10 @@
                         <p>&nbsp;</p>
                         <button type="button" class="btn btn-primary" onclick="changePsw()">修改密码</button>
                     </form>
+                </div>
+                <p>&nbsp;</p>
+                <div id="delete-success" class="alert alert-success" role="alert" style="display: none;">
+                      删除成功
                 </div>
 
             </div>
