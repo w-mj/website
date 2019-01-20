@@ -4,17 +4,22 @@ import requests
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from .models import ChatHistory
 from website.settings import DEBUG
-from website.secrets import amap_web_key
+from website.secrets import amap_web_key, news_addip, joke_key
+
+
+def reply(request, text):
+    if request.user.is_authenticated:
+        history_item_response = ChatHistory()
+        history_item_response.user = request.user
+        history_item_response.is_response = True
+        history_item_response.text = text
+        history_item_response.save()
+    return JsonResponse({"text": text})
 
 
 def chat(request):
     if request.method == 'POST':
         text = request.POST.get("text")
-        if text is None or not text:
-            return JsonResponse({"text": "Inter Server Error."})
-        if "天气" in text:
-            return JsonResponse({"text": weather(text)})
-
         if request.user.is_authenticated:
             history_item = ChatHistory()
             history_item.user = request.user
@@ -22,13 +27,16 @@ def chat(request):
             history_item.text = text
             history_item.save()
 
-            history_item_response = ChatHistory()
-            history_item_response.user = request.user
-            history_item_response.is_response = True
-            history_item_response.text = text
-            history_item_response.save()
+        if text is None or not text:
+            return reply(request, "Inter Server Error.")
 
-        return JsonResponse({"text": text})
+        if "天气" in text:
+            return reply(request, weather(text))
+
+        if text in ['笑话', '讲笑话', '讲个笑话']:
+            return reply(request, next(joke()))
+
+        return reply(request, text)
 
     return HttpResponseForbidden()
 
@@ -74,3 +82,17 @@ def weather(text):
         wd['city'], wd['weather'], wd['temperature'],
         wd['winddirection'], wd['windpower'], wd['humidity']
     )
+
+
+def news():
+    pass
+
+
+def joke():
+    while True:
+        jsons = requests.get('http://v.juhe.cn/joke/randJoke.php', {'key': joke_key}).text
+        json_obj = json.loads(jsons)
+        if json_obj['reason'] != 'success':
+            yield "笑话服务器错误"
+        for joke in json_obj['result']:
+            yield joke['content']

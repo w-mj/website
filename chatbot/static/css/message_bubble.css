@@ -16,6 +16,7 @@
     border-radius: 6px;
     position: relative;
     word-break: break-all;
+    max-width: 350px;
 }
 .message2 {
     float: left;
@@ -32,6 +33,7 @@
     border-radius: 6px;
     position: relative;
     word-break: break-all;
+    max-width: 350px;
 }
 
 .message1::after {
