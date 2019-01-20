@@ -55,6 +55,23 @@ def separation(request):
             return HttpResponse("请输入句子")
         try:
             result = requests.post(url, data=text.encode(), timeout=10).text
+        except Exception as e:
+            result = "Internal server error.\n" + str(e)
+        return HttpResponse(result)
+    return HttpResponseForbidden()
+
+
+def sentiment(request):
+    # if DEBUG:
+    #     url = 'http://127.0.0.1:9091'
+    # else:
+    url = 'http://219.216.64.117:9091'
+    if request.method == 'GET':
+        text = request.GET.get('text', default='')
+        if not text:
+            return HttpResponse("请输入句子")
+        try:
+            result = requests.post(url, data=text.encode(), timeout=10).text
             print("R" + result)
         except Exception as e:
             result = "Internal server error.\n" + str(e)

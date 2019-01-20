@@ -50,6 +50,24 @@ function separation() {
     });
 }
 
+function sentiment() {
+    let box = $("#to-sentiment");
+    t = box.val();
+    $.ajax({
+        url: 'sentiment',
+        type: 'GET',
+        data: {"text": t},
+        success: function (response) {
+            console.log(response);
+            $("#sentiment-result").html(response);
+        },
+        error: function (err) {
+            console.log("sentiment server error");
+            console.log(err);
+        }
+    });
+}
+
 $(document).ready(function () {
     console.log("ready");
     let btn = $("#logout-btn");

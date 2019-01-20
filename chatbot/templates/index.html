@@ -96,7 +96,17 @@
                 </form>
             </div>
             <div class="tab-pane fade" id="synonym" role="tabpanel" aria-labelledby="synonym-tab">近义词</div>
-            <div class="tab-pane fade" id="sentiment" role="tabpanel" aria-labelledby="sentiment-tab">情感</div>
+            <div class="tab-pane fade" id="sentiment" role="tabpanel" aria-labelledby="sentiment-tab">
+                <form>
+                    <div class="form-group form">
+                        <label for="to-sentiment">请输入句子</label>
+                        <textarea class="form-control" id="to-sentiment" rows="3"></textarea>
+                    </div>
+                    <div>结果（数值越大表示句子积极程度越高）：</div>
+                    <div id="sentiment-result"></div>
+                    <button class="btn btn-primary" type="button" onclick="sentiment()">确定</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

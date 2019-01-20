@@ -37,6 +37,8 @@ urlpatterns = [
 
     path('chat', chatbot.func.chat),
     path('separation', chatbot.func.separation),
+    path('sentiment', chatbot.func.sentiment),
+
     path('deploy', deploy),
     path('pc-geetest/get', pc_getcaptcha),
     path('pc-geetest/validate', pc_validate),
