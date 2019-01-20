@@ -1,3 +1,20 @@
+signup_obj = null;
+signin_obj = null;
+$(document).ready(function () {
+    initCaptcha(function (captchaObj) {
+        captchaObj.appendTo("#signup-captcha");
+        captchaObj.bindForm("#signup-form");
+        window.signup_obj = captchaObj;
+    });
+    initCaptcha(function (captchaObj) {
+        captchaObj.appendTo("#signin-captcha");
+        captchaObj.bindForm("#signin-form");
+        window.signin_obj = captchaObj;
+    });
+});
+
+
+
 function uperr(msg) {
     let box = $("#signup-fail");
     box.html(msg);
@@ -10,24 +27,23 @@ function signup() {
     let psw2 = $("#signup-psw2").val();
     if (name === "") {
         uperr("必须填写用户名");
+        signup_obj.reset();
         return
     }
     if (psw1 === "") {
         uperr("必须填写密码");
+        signup_obj.reset();
         return
     }
     if (psw1 !== psw2) {
         uperr("两次输入密码不一致");
+        signup_obj.reset();
         return;
     }
     $.ajax({
         url: "signup",
         method: "POST",
-        data: {
-            csrfmiddlewaretoken: Cookies.get('csrftoken'),
-            username: name,
-            password: psw1
-        },
+        data: $("#signup-form").serializeArray(),
         dataType: 'json',
         success: function (response) {
             console.log(response);
@@ -39,7 +55,8 @@ function signup() {
                     window.location.href='/';
                 }, 2000);
             } else {
-                uperr(response.msg)
+                uperr(response.msg);
+                signup_obj.reset();
             }
         },
         error: function (err) {
@@ -61,20 +78,18 @@ function signin() {
     let psw1 = $("#signin-psw1").val();
     if (name === "") {
         inerr("必须填写用户名");
+        signin_obj.reset();
         return
     }
     if (psw1 === "") {
         inerr("必须填写密码");
+        signin_obj.reset();
         return
     }
         $.ajax({
         url: "signin",
         method: "POST",
-        data: {
-            csrfmiddlewaretoken: Cookies.get('csrftoken'),
-            username: name,
-            password: psw1
-        },
+        data: $("#signin-form").serializeArray(),
         dataType: 'json',
         success: function (response) {
             console.log(response);
@@ -86,7 +101,8 @@ function signin() {
                     window.location.href='/';
                 }, 2000);
             } else {
-                inerr(response.msg)
+                inerr(response.msg);
+                signin_obj.reset();
             }
         },
         error: function (err) {
@@ -95,4 +111,3 @@ function signin() {
         }
     })
 }
-

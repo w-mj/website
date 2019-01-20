@@ -1,27 +1,29 @@
+changepsw_obj = null;
+
+
 function changePsw() {
     let old_psw = $("#old-psw").val();
     let psw1 = $("#new-psw1").val();
     let psw2 = $("#new-psw2").val();
     if (old_psw === "") {
-        uperr("必须填写旧密码");
+        $("#fail").html("必须填写旧密码").show();
+        changepsw_obj.reset();
         return
     }
     if (psw1 === "") {
-        uperr("必须填写密码");
+        $("#fail").html("必须填写新密码").show();
+        changepsw_obj.reset();
         return
     }
     if (psw1 !== psw2) {
-        uperr("两次输入密码不一致");
+        $("#fail").html("两次输入密码不一致").show();
+        changepsw_obj.reset();
         return;
     }
     $.ajax({
         url: "changepsw",
         method: "POST",
-        data: {
-            csrfmiddlewaretoken: Cookies.get('csrftoken'),
-            old_psw: old_psw,
-            new_psw: psw1
-        },
+        data: $("#changepsw-form").serializeArray(),
         dataType: 'json',
         success: function (response) {
             console.log(response);
@@ -34,6 +36,7 @@ function changePsw() {
                 }, 2000);
             } else {
                 $("#fail").html(response.msg).show();
+                changepsw_obj.reset();
             }
         },
         error: function (err) {
@@ -57,5 +60,11 @@ $(document).ready(function () {
         uploadExtraData: {csrfmiddlewaretoken: Cookies.get('csrftoken')}
     }).on('fileuploaded', function(event, data, previewId, index) {
         window.location.reload();
+    });
+
+    initCaptcha(function (captchaObj) {
+        captchaObj.appendTo("#changepsw-captcha");
+        captchaObj.bindForm("#changepsw-form");
+        window.changepsw_obj = captchaObj;
     });
 });

@@ -21,6 +21,7 @@ import chatbot.auth
 import chatbot.func
 from website import settings
 from .deploy import deploy
+from .captcha import pc_getcaptcha, pc_validate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,7 +36,10 @@ urlpatterns = [
 
     path('chat', chatbot.func.chat),
     path('separation', chatbot.func.separation),
-    path('deploy', deploy)
+    path('deploy', deploy),
+    path('pc-geetest/get', pc_getcaptcha),
+    path('pc-geetest/validate', pc_validate),
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

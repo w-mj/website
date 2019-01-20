@@ -14,6 +14,10 @@
     <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/login.js' %}"></script>
+
+    <script src="{% static 'js/gt.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/captcha.js' %}"></script>
+
 </head>
 <body>
 
@@ -42,21 +46,25 @@
         <div class="tab-content col-md-6" id="navContent">
             <!-- 注册 -->
             <div class="tab-pane fade show active" id="signup" role="tabpanel" aria-labelledby="signup-tab">
-                <form>
+                <form id="signup-form">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="signup-name">用户名</label>
-                        <input type="text" class="form-control" id="signup-name" placeholder="请输入用户名">
+                        <input type="text" class="form-control" name="username" id="signup-name" placeholder="请输入用户名">
                     </div>
                     <div class="form-group">
                         <label for="signup-psw1">密码</label>
-                        <input type="password" class="form-control" id="signup-psw1"
+                        <input type="password" class="form-control" name="password" id="signup-psw1"
                                placeholder="请输入密码">
                     </div>
                     <div class="form-group">
                         <label for="signup-psw2">重复密码</label>
-                        <input type="password" class="form-control" id="signup-psw2"
+                        <input type="password" class="form-control" name="signup-psw2" id="signup-psw2"
                                placeholder="请再次输入密码">
                     </div>
+                    <div id="signup-captcha"></div>
+                    <p>&nbsp;</p>
+
                     <div id="signup-success" class="alert alert-success" role="alert" style="display: none;">
                       注册成功
                     </div>
@@ -68,16 +76,19 @@
             </div>
             <!-- 登陆 -->
             <div class="tab-pane fade" id="signin" role="tabpanel" aria-labelledby="signin-tab">
-                <form>
+                <form id="signin-form">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="signin-name">用户名</label>
-                        <input type="text" class="form-control" id="signin-name" placeholder="请输入用户名">
+                        <input type="text" class="form-control" id="signin-name" name='username' placeholder="请输入用户名">
                     </div>
                     <div class="form-group">
                         <label for="signin-psw1">密码</label>
-                        <input type="password" class="form-control" id="signin-psw1"
+                        <input type="password" class="form-control" name="password" id="signin-psw1"
                                placeholder="请输入密码">
                     </div>
+                    <div id="signin-captcha"></div>
+                    <p>&nbsp;</p>
                     <div id="signin-success" class="alert alert-success" role="alert" style="display: none;">
                       登陆成功
                     </div>
@@ -92,7 +103,6 @@
 </div>
 
 <div id="r"></div>
-{% csrf_token %}
 </body>
 
 </html>

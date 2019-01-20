@@ -11,7 +11,6 @@
     <script type="text/javascript" src="{% static 'js/js.cookie-2.2.0.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/user_center.js' %}"></script>
 
     <link rel="stylesheet" href="{% static 'css/fileinput.min.css'%}" media="all" type="text/css" />
     <script type="text/javascript" src="{% static 'js/file_input/awesomefont.js' %}"></script>
@@ -19,6 +18,10 @@
     <script type="text/javascript" src="{% static 'js/file_input/fileinput.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/file_input/theme.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/file_input/zh.js' %}"></script>
+
+    <script src="{% static 'js/gt.js' %}"></script>
+    <script src="{% static 'js/captcha.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/user_center.js' %}"></script>
 </head>
 <body>
 
@@ -66,14 +69,15 @@
 
                 </div>
                 <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                    <form>
+                    <form id="changepsw-form">
+                        {% csrf_token %}
                         <div class="form-group">
                             <label for="signup-name">请输入旧密码</label>
-                            <input type="password" class="form-control" id="old-psw" placeholder="请输入旧密码">
+                            <input type="password" class="form-control" name="old_psw" id="old-psw" placeholder="请输入旧密码">
                         </div>
                         <div class="form-group">
                             <label for="signup-psw1">请输入新密码</label>
-                            <input type="password" class="form-control" id="new-psw1"
+                            <input type="password" class="form-control" name="new_psw" id="new-psw1"
                                    placeholder="请输入密码">
                         </div>
                         <div class="form-group">
@@ -87,6 +91,8 @@
                         <div id="fail" class="alert alert-danger" role="alert" style="display: none;">
                             A simple success alert—check it out!
                         </div>
+                        <div id="changepsw-captcha"></div>
+                        <p>&nbsp;</p>
                         <button type="button" class="btn btn-primary" onclick="changePsw()">修改密码</button>
                     </form>
                 </div>
@@ -98,7 +104,6 @@
 </div>
 
 <div id="r"></div>
-{% csrf_token %}
 </body>
 
 </html>
