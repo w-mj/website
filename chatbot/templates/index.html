@@ -64,10 +64,11 @@
                                 <div class="avatar1">
                                     <img src="{{ current_user.avatar.avatar.url }}" class="avatar-img">
                                 </div>
+                                <div class="message1">
+                                    {{ item.text }}
+                                </div>
                             </div>
-                            <div class="message1">
-                                {{ item.text }}
-                            </div>
+
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -100,13 +101,17 @@
     </div>
 </div>
 <div id="response-template" style="display: none;">
-    <div class="avatar">
+    <div class="avatar2">
         <img src="{% static 'img/me.jpg' %}" class="avatar-img">
     </div>
 </div>
 <div id="say-template" style="display: none;">
-    <div class="avatar">
-        <img src="{% static 'img/me.jpg' %}" class="avatar-img">
+    <div class="avatar1">
+        {% if current_user.is_authenticated %}
+        <img src="{{ current_user.avatar.avatar.url }}" class="avatar-img">
+        {% else %}
+        <img src="{% static 'img/default.png' %}" class="avatar-img">
+        {% endif %}
     </div>
 </div>
 {% csrf_token %}

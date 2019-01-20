@@ -1,7 +1,10 @@
+import json
+
 import requests
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from .models import ChatHistory
 from website.settings import DEBUG
+from website.secrets import amap_web_key
 
 
 def chat(request):
@@ -9,6 +12,8 @@ def chat(request):
         text = request.POST.get("text")
         if text is None or not text:
             return JsonResponse({"text": "Inter Server Error."})
+        if "天气" in text:
+            return JsonResponse({"text": weather(text)})
 
         if request.user.is_authenticated:
             history_item = ChatHistory()
@@ -44,3 +49,28 @@ def separation(request):
             result = "Internal server error.\n" + str(e)
         return HttpResponse(result)
     return HttpResponseForbidden()
+
+
+def weather(text):
+    text = text.strip()
+    text = text.replace('天气', '')
+    requests_data = {
+        'key': amap_web_key,
+        'address': text
+    }
+    requests_result = requests.get('https://restapi.amap.com/v3/geocode/geo', params=requests_data)
+    result_json = json.loads(requests_result.text)
+    if result_json['count'] == 0:
+        return "天气服务器错误"
+    adcode = result_json['geocodes'][0]['adcode']
+
+    weather_data = {
+        'key': amap_web_key,
+        'city': adcode
+    }
+    weather_result = requests.get('https://restapi.amap.com/v3/weather/weatherInfo', params=weather_data)
+    wd = json.loads(weather_result.text)['lives'][0]
+    return "{}天气{}，温度{}℃，{}风{}级，湿度{}".format(
+        wd['city'], wd['weather'], wd['temperature'],
+        wd['winddirection'], wd['windpower'], wd['humidity']
+    )

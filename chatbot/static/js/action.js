@@ -5,7 +5,12 @@ function sendMessage() {
     let chat_box = $("#chat-box");
     box.val('');
     console.log("say: " + text);
-    chat_box.append("<div class=\" message1\">" + text + "</div>");
+    chat_box.append(
+        '<div class="chat-item">\n' +
+            $("#say-template").html() +
+            '<div class="message1">' + text + '</div>' +
+        '</div>'
+    );
     chat_box.scrollTop(chat_box[0].scrollHeight);
     $.ajax({
         url: 'chat',
@@ -13,11 +18,11 @@ function sendMessage() {
         data: {text:text, csrfmiddlewaretoken: Cookies.get('csrftoken')},
         dataType: 'json',
         success: function (response) {
-            chat_box.append('<div class="chat-item-2">\n' +
-                $("#response-template").html() +
-                '<div class="message2">\n' +
-                response.text +'\n' +
-                '</div></div>');
+            chat_box.append(
+                '<div class="chat-item">\n' +
+                    $("#response-template").html() +
+                    '<div class="message2">' + response.text + '</div>' +
+                '</div>');
             chat_box.scrollTop(chat_box[0].scrollHeight);
         },
         error: function (err) {
