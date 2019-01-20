@@ -4,7 +4,7 @@ import requests
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from .models import ChatHistory
 from website.settings import DEBUG
-from website.secrets import amap_web_key, news_addip, joke_key
+from website.secrets import amap_web_key, news_key, joke_key
 
 
 def reply(request, text):
@@ -35,6 +35,9 @@ def chat(request):
 
         if text in ['笑话', '讲笑话', '讲个笑话']:
             return reply(request, next(joke()))
+
+        if text == '新闻':
+            return reply(request, next(news()))
 
         return reply(request, text)
 
@@ -85,7 +88,15 @@ def weather(text):
 
 
 def news():
-    pass
+    while True:
+        jsons = requests.get('http://v.juhe.cn/toutiao/index', {'key': news_key}).text
+        json_obj = json.loads(jsons)
+        if json_obj['reason'] != '成功的返回':
+            yield "新闻服务器错误"
+        if len(json_obj['result']['data']) == 0:
+            yield "新闻服务器错误"
+        for news in json_obj['result']['data']:
+            yield '<a href="{}" target="_Blank">{}</a>'.format(news['url'], news['title'])
 
 
 def joke():
