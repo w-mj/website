@@ -56,7 +56,7 @@
                                     <img src="{% static 'img/me.jpg' %}" class="avatar-img">
                                 </div>
                                 <div class="message2">
-                                    {{ item.text }}
+                                    {{ item.text|safe }}
                                 </div>
                             </div>
                         {% else %}

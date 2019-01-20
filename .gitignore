@@ -1,4 +1,5 @@
 .idea
 static/*
 website/secrets.py
+upload_secrets.sh
 __pycache__
