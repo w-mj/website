@@ -68,6 +68,26 @@ function sentiment() {
     });
 }
 
+function synonym() {
+    let w1 = $("#synonym-box-1").val();
+    let w2 = $("#synonym-box-2").val();
+    if (w1 === '' || w2 === '')
+        return;
+    $.ajax({
+        url: 'synonym',
+        type: 'GET',
+        data: {w1: w1, w2: w2},
+        success: function (response) {
+            console.log(response);
+            $("#synonym-result").html(response);
+        },
+        error: function (err) {
+            console.log("synonym server error");
+            console.log(err);
+        }
+    });
+}
+
 $(document).ready(function () {
     console.log("ready");
     let btn = $("#logout-btn");
@@ -88,4 +108,5 @@ $(document).ready(function () {
     let chat_box = $("#chat-box");
     chat_box.scrollTop(chat_box[0].scrollHeight);
 });
+
 

@@ -78,6 +78,19 @@ def sentiment(request):
         return HttpResponse(result)
     return HttpResponseForbidden()
 
+def synonym(request):
+    url = 'http://219.216.64.117:9092'
+    if request.method == 'GET':
+        w1 = request.GET.get('w1', default='')
+        w2 = request.GET.get('w2', default='')
+        try:
+            result = requests.post(url, data=(w1 + ' ' + w2).encode(), timeout=10).text
+            print("R" + result)
+        except Exception as e:
+            result = "Internal server error.\n" + str(e)
+        return HttpResponse(result)
+    return HttpResponseForbidden()
+
 
 def weather(text):
     text = text.strip()

@@ -95,7 +95,19 @@
                     <button class="btn btn-primary" type="button" onclick="separation()">确定</button>
                 </form>
             </div>
-            <div class="tab-pane fade" id="synonym" role="tabpanel" aria-labelledby="synonym-tab">近义词</div>
+            <div class="tab-pane fade" id="synonym" role="tabpanel" aria-labelledby="synonym-tab">
+                <h5>请输入两个词</h5>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" aria-label="Text"
+                           aria-describedby="send" id="synonym-box-1">
+                    &nbsp;
+                    <input type="text" class="form-control" aria-label="Text"
+                           aria-describedby="send" id="synonym-box-2">
+                </div>
+                <div>结果：</div>
+                <div id="synonym-result"></div>
+                <button class="btn btn-primary" type="button" onclick="synonym()">确定</button>
+            </div>
             <div class="tab-pane fade" id="sentiment" role="tabpanel" aria-labelledby="sentiment-tab">
                 <form>
                     <div class="form-group form">
