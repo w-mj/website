@@ -16,6 +16,31 @@ def reply(request, text):
         history_item_response.save()
     return JsonResponse({"text": text})
 
+def news():
+    while True:
+        jsons = requests.get('http://v.juhe.cn/toutiao/index', {'key': news_key}).text
+        json_obj = json.loads(jsons)
+        if json_obj['reason'] != '成功的返回':
+            yield "新闻服务器错误"
+        if len(json_obj['result']['data']) == 0:
+            yield "新闻服务器错误"
+        for news in json_obj['result']['data']:
+            yield '<a href="{}" target="_Blank">{}</a>'.format(news['url'], news['title'])
+
+
+def joke():
+    while True:
+        jsons = requests.get('http://v.juhe.cn/joke/randJoke.php', {'key': joke_key}).text
+        json_obj = json.loads(jsons)
+        if json_obj['reason'] != 'success':
+            yield "笑话服务器错误"
+        for joke in json_obj['result']:
+            yield joke['content']
+
+
+news_getter = news()
+joke_getter = joke()
+
 
 def chat(request):
     if request.method == 'POST':
@@ -34,10 +59,10 @@ def chat(request):
             return reply(request, weather(text))
 
         if text in ['笑话', '讲笑话', '讲个笑话']:
-            return reply(request, next(joke()))
+            return reply(request, next(joke_getter))
 
         if text == '新闻':
-            return reply(request, next(news()))
+            return reply(request, next(news_getter))
 
         return reply(request, text)
 
@@ -117,23 +142,4 @@ def weather(text):
     )
 
 
-def news():
-    while True:
-        jsons = requests.get('http://v.juhe.cn/toutiao/index', {'key': news_key}).text
-        json_obj = json.loads(jsons)
-        if json_obj['reason'] != '成功的返回':
-            yield "新闻服务器错误"
-        if len(json_obj['result']['data']) == 0:
-            yield "新闻服务器错误"
-        for news in json_obj['result']['data']:
-            yield '<a href="{}" target="_Blank">{}</a>'.format(news['url'], news['title'])
 
-
-def joke():
-    while True:
-        jsons = requests.get('http://v.juhe.cn/joke/randJoke.php', {'key': joke_key}).text
-        json_obj = json.loads(jsons)
-        if json_obj['reason'] != 'success':
-            yield "笑话服务器错误"
-        for joke in json_obj['result']:
-            yield joke['content']
