@@ -25,6 +25,7 @@
 .avatar-img {
     height: 35px;
     width: 35px;
+    cursor: pointer;
 }
 
 .chat-item {
@@ -34,4 +35,10 @@
 .avatar-modal {
     max-width: 466px;
     max-height: 466px;
+}
+
+.emoji {
+    float:right;
+    font-size: 15px;
+    right: -10px;
 }

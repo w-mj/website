@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+<!-- 😄 🙂 😑 😞-->
 
 <head>
     <meta charset="UTF-8">
@@ -92,6 +93,21 @@
                                 </div>
                                 <div class="message1">
                                     {{ item.text }}
+                                </div>
+                                <div class="emoji">
+                                    {% if item.emotion < 0 %}
+
+                                    {% elif item.emotion >= 0 and item.emotion < 0.25 %}
+                                        😞
+                                    {% elif item.emotion < 0.5 %}
+                                        😑
+                                    {% elif item.emotion < 0.75 %}
+                                        🙂
+                                    {% elif item.emotion <= 1 %}
+                                        😄
+                                    {% else %}
+
+                                    {% endif %}
                                 </div>
                             </div>
 

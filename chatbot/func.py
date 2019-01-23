@@ -7,14 +7,15 @@ from website.settings import DEBUG
 from website.secrets import amap_web_key, news_key, joke_key
 
 
-def reply(request, text):
+def reply(request, text, emo):
     if request.user.is_authenticated:
         history_item_response = ChatHistory()
         history_item_response.user = request.user
         history_item_response.is_response = True
         history_item_response.text = text
         history_item_response.save()
-    return JsonResponse({"text": text})
+    return JsonResponse({"text": text, "emo": emo})
+
 
 def news():
     while True:
@@ -45,26 +46,33 @@ joke_getter = joke()
 def chat(request):
     if request.method == 'POST':
         text = request.POST.get("text")
+        if text is None:
+            return JsonResponse({"text": ""})
+
+        emotion = requests.post('http://219.216.64.117:9091', data=text.encode(), timeout=10).text
+        emotion = float(emotion)
+
         if request.user.is_authenticated:
             history_item = ChatHistory()
             history_item.user = request.user
             history_item.is_response = False
             history_item.text = text
+            history_item.emotion = emotion
             history_item.save()
 
         if text is None or not text:
-            return reply(request, "Inter Server Error.")
+            return reply(request, "Inter Server Error.", emotion)
 
         if "天气" in text:
-            return reply(request, weather(text))
+            return reply(request, weather(text), emotion)
 
         if text in ['笑话', '讲笑话', '讲个笑话']:
-            return reply(request, next(joke_getter))
+            return reply(request, next(joke_getter), emotion)
 
         if text == '新闻':
-            return reply(request, next(news_getter))
+            return reply(request, next(news_getter), emotion)
 
-        return reply(request, text)
+        return reply(request, text, emotion)
 
     return HttpResponseForbidden()
 
@@ -102,6 +110,7 @@ def sentiment(request):
             result = "Internal server error.\n" + str(e)
         return HttpResponse(result)
     return HttpResponseForbidden()
+
 
 def synonym(request):
     url = 'http://219.216.64.117:9092'

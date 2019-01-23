@@ -4,7 +4,7 @@
     width: content-box;
     /*width: auto;*/
     /*height: 80px;*/
-    margin: 5px;
+    margin: 5px 5px 5px 0;
     background-color: #aeff72;
     border-bottom-color: #aeff72;
     /*为了给after伪元素自动继承*/

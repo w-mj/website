@@ -1,14 +1,29 @@
 
+function emo2emoji(emo) {
+    if (emo >= 0 && emo < 0.25)
+        return "😞";
+    if (emo < 0.5)
+        return "😑";
+    if (emo < 0.75)
+        return "🙂";
+    if (emo <= 1)
+        return "😄";
+    return "";
+}
 function sendMessage() {
     let box = $("#input-box");
     let text = box.val();
+    if (text === "")
+        return;
     let chat_box = $("#chat-box");
     box.val('');
     console.log("say: " + text);
     chat_box.append(
-        '<div class="chat-item">\n' +
+        '<div class="chat-item" id="temp-message1">\n' +
             $("#say-template").html() +
             '<div class="message1">' + text + '</div>' +
+        '<div class="emoji">' +
+        '</div>'+
         '</div>'
     );
     chat_box.scrollTop(chat_box[0].scrollHeight);
@@ -18,6 +33,15 @@ function sendMessage() {
         data: {text:text, csrfmiddlewaretoken: Cookies.get('csrftoken')},
         dataType: 'json',
         success: function (response) {
+            $("#temp-message1").remove();
+            chat_box.append(
+                '<div class="chat-item">\n' +
+                    $("#say-template").html() +
+                    '<div class="message1">' + text + '</div>' +
+                '<div class="emoji">' + emo2emoji(response.emo) +
+                '</div>'+
+                '</div>'
+            );
             chat_box.append(
                 '<div class="chat-item">\n' +
                     $("#response-template").html() +

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+
 def index(request):
     if request.user.is_authenticated:
         history = request.user.chat_history.all()
