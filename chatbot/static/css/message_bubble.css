@@ -22,8 +22,8 @@
     float: left;
     width: content-box;
     margin: 5px;
-    background-color: #aeff72;
-    border-bottom-color: #aeff72;
+    background-color: #eeeeee;
+    border-bottom-color: #eeeeee;
     /*为了给after伪元素自动继承*/
 
     font-size: 16px;
