@@ -23,10 +23,15 @@
 }
 
 .avatar-img {
-    height: 30px;
-    width: 30px;
+    height: 35px;
+    width: 35px;
 }
 
 .chat-item {
     clear: both;
+}
+
+.avatar-modal {
+    max-width: 466px;
+    max-height: 466px;
 }

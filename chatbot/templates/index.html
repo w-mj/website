@@ -16,6 +16,30 @@
 </head>
 <body>
 
+<div class="modal fade" id="responseBigAvatar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="text-align: center;">
+          <img src="{% static 'img/me.jpg' %}" class="avatar-modal">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="bigAvatar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: ">
+    <div class="modal-content">
+      <div class="modal-body" style="text-align: center;">
+            {% if current_user.is_authenticated %}
+                <img src="{{ current_user.avatar.avatar.url }}" class="avatar-modal">
+            {% else %}
+                <img src="{% static 'img/default.png' %}" class="avatar-modal">
+            {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
 
     {% include 'nav.html' %}
@@ -53,7 +77,8 @@
                         {% if item.is_response %}
                             <div class="chat-item">
                                 <div class="avatar2">
-                                    <img src="{% static 'img/me.jpg' %}" class="avatar-img">
+                                    <img data-toggle="modal" data-target="#responseBigAvatar"
+                                         src="{% static 'img/me.jpg' %}" class="avatar-img">
                                 </div>
                                 <div class="message2">
                                     {{ item.text|safe }}
@@ -62,7 +87,8 @@
                         {% else %}
                             <div class="chat-item">
                                 <div class="avatar1">
-                                    <img src="{{ current_user.avatar.avatar.url }}" class="avatar-img">
+                                    <img data-toggle="modal" data-target="#bigAvatar"
+                                         src="{{ current_user.avatar.avatar.url }}" class="avatar-img">
                                 </div>
                                 <div class="message1">
                                     {{ item.text }}
@@ -122,17 +148,18 @@
         </div>
     </div>
 </div>
-<div id="response-template" style="display: none;">
+<div id="response-template">
     <div class="avatar2">
-        <img src="{% static 'img/me.jpg' %}" class="avatar-img">
+        <img data-toggle="modal" data-target="#responseBigAvatar"
+             src="{% static 'img/me.jpg' %}" class="avatar-img">
     </div>
 </div>
 <div id="say-template" style="display: none;">
     <div class="avatar1">
         {% if current_user.is_authenticated %}
-        <img src="{{ current_user.avatar.avatar.url }}" class="avatar-img">
+        <img data-toggle="modal" data-target="#bigAvatar" src="{{ current_user.avatar.avatar.url }}" class="avatar-img">
         {% else %}
-        <img src="{% static 'img/default.png' %}" class="avatar-img">
+        <img data-toggle="modal" data-target="#bigAvatar" src="{% static 'img/default.png' %}" class="avatar-img">
         {% endif %}
     </div>
 </div>
