@@ -4,8 +4,26 @@ import requests
 from django.http import JsonResponse, HttpResponse, HttpResponseForbidden
 from .models import ChatHistory
 from website.settings import DEBUG
-from website.secrets import amap_web_key, news_key, joke_key
+from website.secrets import amap_web_key, news_key, joke_key, turing_key, turing_userid
 
+
+def emo2emoji(emo):
+    if 0 <= emo < 0.25:
+        return "😞"
+    if emo < 0.5:
+        return "😑"
+    if emo < 0.75:
+        return "🙂"
+    if emo <= 1:
+        return "😄"
+    return ""
+
+
+def check_contain_chinese(check_str):
+    for ch in check_str:
+        if u'\u4e00' <= ch <= u'\u9fff':
+            return True
+    return False
 
 def reply(request, text, emo):
     if request.user.is_authenticated:
@@ -66,13 +84,38 @@ def chat(request):
         if "天气" in text:
             return reply(request, weather(text), emotion)
 
-        if text in ['笑话', '讲笑话', '讲个笑话']:
+        if '笑话' in text:
             return reply(request, next(joke_getter), emotion)
 
-        if text == '新闻':
+        if '新闻' in text:
             return reply(request, next(news_getter), emotion)
 
-        return reply(request, text, emotion)
+        if not check_contain_chinese(text):
+            text = text.replace('@', '')
+            text = text + "@" + emo2emoji(emotion)
+            chat_result = requests.post('http://219.216.64.117:9093', data=text.encode('utf-8')).text
+        else:
+            request_data = {
+                'perception': {
+                    "inputText": {
+                        "text": text
+                    }
+                },
+                "userInfo": {
+                    "apiKey": turing_key,
+                    "userId": turing_userid
+                }
+            }
+            request_result = requests.post('http://openapi.tuling123.com/openapi/api/v2', data=json.dumps(request_data)).text
+            request_result = json.loads(request_result)
+            if request_result['intent']['code'] != 10005:
+                chat_result = 'internal server error.'
+            result = []
+            for r  in request_result['results']:
+                if r['resultType'] == 'text':
+                    result.append(r['values']['text'])
+            chat_result = '\n'.join(result)
+        return reply(request, chat_result, emotion)
 
     return HttpResponseForbidden()
 
