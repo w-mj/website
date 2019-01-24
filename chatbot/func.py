@@ -7,6 +7,37 @@ from website.settings import DEBUG
 from website.secrets import amap_web_key, news_key, joke_key, turing_key, turing_userid
 
 
+class CityMatch:
+    def __init__(self):
+        self.d = d = {'f': False}
+        with open('chatbot/city.txt', encoding='utf-8') as f:
+            for line in f:
+                line = line[:-1]
+                if len(line) < 2:
+                    continue
+                c = d
+                for i, w in enumerate(line):
+                    if w not in c:
+                        c[w] = {'f': False}
+                    c = c[w]
+                    if i == len(line) - 1:
+                        c['f'] = True
+
+    def match(self, ob):
+        c = self.d
+        for w in ob:
+            if w in c:
+                c = c[w]
+            else:
+                return False
+            if c['f'] is True:
+                return True
+        return c['f']
+
+
+city_match = CityMatch()
+
+
 def emo2emoji(emo):
     if 0 <= emo < 0.25:
         return "😞"
@@ -24,6 +55,7 @@ def check_contain_chinese(check_str):
         if u'\u4e00' <= ch <= u'\u9fff':
             return True
     return False
+
 
 def reply(request, text, emo):
     if request.user.is_authenticated:
@@ -82,7 +114,9 @@ def chat(request):
             return reply(request, "Inter Server Error.", emotion)
 
         if "天气" in text:
-            return reply(request, weather(text), emotion)
+            t = weather(text)
+            if t is not None:
+                return reply(request, t, emotion)
 
         if '笑话' in text:
             return reply(request, next(joke_getter), emotion)
@@ -106,12 +140,13 @@ def chat(request):
                     "userId": turing_userid
                 }
             }
-            request_result = requests.post('http://openapi.tuling123.com/openapi/api/v2', data=json.dumps(request_data)).text
+            request_result = requests.post('http://openapi.tuling123.com/openapi/api/v2',
+                                           data=json.dumps(request_data)).text
             request_result = json.loads(request_result)
             if request_result['intent']['code'] != 10005:
                 chat_result = 'internal server error.'
             result = []
-            for r  in request_result['results']:
+            for r in request_result['results']:
                 if r['resultType'] == 'text':
                     result.append(r['values']['text'])
             chat_result = '\n'.join(result)
@@ -172,6 +207,12 @@ def synonym(request):
 def weather(text):
     text = text.strip()
     text = text.replace('天气', '')
+    while text:
+        if city_match.match(text):
+            break
+        text = text[1:]
+    if not text:
+        return None
     requests_data = {
         'key': amap_web_key,
         'address': text
@@ -192,6 +233,3 @@ def weather(text):
         wd['city'], wd['weather'], wd['temperature'],
         wd['winddirection'], wd['windpower'], wd['humidity']
     )
-
-
-
