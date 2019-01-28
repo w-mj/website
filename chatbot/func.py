@@ -40,11 +40,11 @@ city_match = CityMatch()
 
 def emo2emoji(emo):
     if 0 <= emo < 0.25:
-        return "😞"
+        return "😩"
     if emo < 0.5:
-        return "😑"
+        return "😭"
     if emo < 0.75:
-        return "😄"
+        return "😊"
     if emo <= 1:
         return "😂"
     return ""
