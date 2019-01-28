@@ -10,11 +10,28 @@ function emo2emoji(emo) {
         return "😂";
     return "";
 }
+
+function html_encode(str)
+{
+  var s = "";
+  if (str.length === 0) return "";
+  s = str.replace(/&/g, "&gt;");
+  s = s.replace(/</g, "&lt;");
+  s = s.replace(/>/g, "&gt;");
+  s = s.replace(/ /g, "&nbsp;");
+  s = s.replace(/'/g, "&#39;");
+  s = s.replace(/"/g, "&quot;");
+  s = s.replace(/\n/g, "<br>");
+  return s;
+}
+
 function sendMessage() {
     let box = $("#input-box");
     let text = box.val();
     if (text === "")
         return;
+    let raw_text = text;
+    text = html_encode(text);
     let chat_box = $("#chat-box");
     box.val('');
     console.log("say: " + text);
@@ -30,7 +47,7 @@ function sendMessage() {
     $.ajax({
         url: 'chat',
         type: 'POST',
-        data: {text:text, csrfmiddlewaretoken: Cookies.get('csrftoken')},
+        data: {text:raw_text, csrfmiddlewaretoken: Cookies.get('csrftoken')},
         dataType: 'json',
         success: function (response) {
             $("#temp-message1").remove();
