@@ -127,7 +127,7 @@ def chat(request):
         if not check_contain_chinese(text):
             text = text.replace('@', '')
             text = text + "@" + emo2emoji(emotion)
-            chat_result = requests.post('http://219.216.64.117:9093', data=text.encode('utf-8')).text
+            chat_result = requests.post('http://127.0.0.1:9093', data=text.encode('utf-8')).text
         else:
             request_data = {
                 'perception': {
