@@ -5,9 +5,9 @@ function emo2emoji(emo) {
     if (emo < 0.5)
         return "😑";
     if (emo < 0.75)
-        return "🙂";
-    if (emo <= 1)
         return "😄";
+    if (emo <= 1)
+        return "😂";
     return "";
 }
 function sendMessage() {
