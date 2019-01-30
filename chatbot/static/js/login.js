@@ -53,7 +53,7 @@ function signup() {
                 Cookies.set('uid', response.uid);
                 setTimeout(function () {
                     window.location.href='/';
-                }, 2000);
+                }, 1000);
             } else {
                 uperr(response.msg);
                 signup_obj.reset();
@@ -99,7 +99,7 @@ function signin() {
                 Cookies.set('uid', response.uid);
                 setTimeout(function () {
                     window.location.href='/';
-                }, 2000);
+                }, 1000);
             } else {
                 inerr(response.msg);
                 signin_obj.reset();
