@@ -1,4 +1,23 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- 😄 🙂 😑 😞-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Bot</title>
+    {% load staticfiles %}
+
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/message_bubble.css' %}"/>
+    <script type="text/javascript" src="{% static 'js/js.cookie-2.2.0.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/action.js' %}"></script>
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/">东东聊天机器人</a>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto"> </ul>
@@ -15,6 +34,7 @@
         {% endif %}
     </div>
 </nav>
+</div>
 <script>
     $(document).ready(function () {
         $("#user-btn-group").hover(function () {
@@ -37,3 +57,10 @@
         });
     }
 </script>
+
+{% block content %}
+
+{% endblock %}
+
+</body>
+</html>
