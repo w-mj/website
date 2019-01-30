@@ -1,0 +1,6 @@
+.loading {
+    background: url('../img/colorful_loading.gif') center;
+    height: 100%;
+    width: 100%;
+    display: block;
+}

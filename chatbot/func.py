@@ -233,3 +233,15 @@ def weather(text):
         wd['city'], wd['weather'], wd['temperature'],
         wd['winddirection'], wd['windpower'], wd['humidity']
     )
+
+
+def statistics(request):
+    if request.method != 'GET':
+        return HttpResponseForbidden()
+    if not request.user.is_authenticated:
+        return JsonResponse({'A': 0, 'B': 0, 'C': 0, 'D': 0})
+    A = ChatHistory.objects.filter(user=request.user, emotion__gte=0, emotion__lt=0.25).count()
+    B = ChatHistory.objects.filter(user=request.user, emotion__gte=0.25, emotion__lt=0.5).count()
+    C = ChatHistory.objects.filter(user=request.user, emotion__gte=0.5, emotion__lt=0.75).count()
+    D = ChatHistory.objects.filter(user=request.user, emotion__gte=0.75).count()
+    return JsonResponse({'A': A, 'B': B, 'C': C, 'D': D})

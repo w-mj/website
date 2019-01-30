@@ -28,6 +28,7 @@ urlpatterns = [
     path('', chatbot.views.index),
     path('login', chatbot.views.login),
     path('user', chatbot.views.user_center),
+
     path('signup', chatbot.auth.signup),
     path('signin', chatbot.auth.signin),
     path('logout', chatbot.auth.logout),
@@ -35,6 +36,7 @@ urlpatterns = [
     path('uploadavatar', chatbot.auth.changeAvatar),
     path('deletehistory', chatbot.auth.deleteHistory),
 
+    path('statistics', chatbot.func.statistics),
     path('chat', chatbot.func.chat),
     path('separation', chatbot.func.separation),
     path('sentiment', chatbot.func.sentiment),
