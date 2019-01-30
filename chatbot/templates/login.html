@@ -2,10 +2,10 @@
 {% block content %}
 {% load staticfiles %}
 
-<script type="text/javascript" src="{% static 'js/login.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/gt.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/captcha.js' %}"></script>
-
+    <script type="text/javascript" src="{% static 'js/login.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/gt.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/captcha.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
 <div class="container">
 
     <div class="row">
@@ -46,7 +46,9 @@
                         <input type="password" class="form-control" name="signup-psw2" id="signup-psw2"
                                placeholder="请再次输入密码">
                     </div>
-                    <div id="signup-captcha"></div>
+                    <div id="signup-captcha" style="height: 42px; width: 298px;">
+                        <div class="loading"></div>
+                    </div>
                     <p>&nbsp;</p>
 
                     <div id="signup-success" class="alert alert-success" role="alert" style="display: none;">

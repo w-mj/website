@@ -2,6 +2,7 @@ signup_obj = null;
 signin_obj = null;
 $(document).ready(function () {
     initCaptcha(function (captchaObj) {
+        $("#signup-captcha").html('');
         captchaObj.appendTo("#signup-captcha");
         captchaObj.bindForm("#signup-form");
         window.signup_obj = captchaObj;
