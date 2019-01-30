@@ -1,6 +1,10 @@
 {% extends 'nav.html' %}
 {% block content %}
 {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'css/message_bubble.css' %}"/>
+<script type="text/javascript" src="{% static 'js/action.js' %}"></script>
+
 <div class="modal fade" id="responseBigAvatar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -12,7 +16,7 @@
 </div>
 
 <div class="modal fade" id="bigAvatar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: ">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body" style="text-align: center;">
             {% if current_user.is_authenticated %}

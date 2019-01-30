@@ -1,14 +1,14 @@
 {% extends 'nav.html' %}
 {% block content %}
-
 {% load staticfiles %}
 
-<link rel="stylesheet" href="{% static 'css/fileinput.min.css'%}" media="all" type="text/css" />
-<script type="text/javascript" src="{% static 'js/file_input/awesomefont.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/file_input/piexif.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/file_input/fileinput.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/file_input/theme.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/file_input/zh.js' %}"></script>
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/css/fileinput.min.css" integrity="sha384-Nt0CAtVIHpKKNv40T6LK2b4T1OuvzoIUgZC1SCmbZBldI70Aba6SZb0/r7BWsOoW" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+<script src="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/js/plugins/piexif.min.js" integrity="sha384-LBn99WQzkTDqv2h5L8yIOywHmqQvPsnkZZwxIg5ikQnHP2WbXhrKdLsUF65TgANs" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/js/fileinput.min.js" integrity="sha384-HMOvn1LNz/lKFrXc6tMWmews7b9HBevcQclM16BJSYC8V3CqSEI/kArTb0g9Zym/" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/themes/fas/theme.min.js" integrity="sha384-w1DWvuVLCI1ZjFufCedwA4S4ZnhWQ0FKxi3gQ+8KDgKgbRF7+ds9AWyM/P4ce991" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/js/locales/zh.min.js" integrity="sha384-ZZ4efga/nsThNxTvT2nayjsb0LhXU1y0kakhVkSRmZVDX73HW7+wCMmGIEFKqX9w" crossorigin="anonymous"></script>
 
 <script src="{% static 'js/gt.js' %}"></script>
 <script src="{% static 'js/captcha.js' %}"></script>
