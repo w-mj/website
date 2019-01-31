@@ -113,6 +113,11 @@ $(document).ready(function () {
                     xAxis: {
                         type: 'time',
                         minInterval: 1,
+                        axisLabel: {
+                            formatter: function(value, index) {
+                                return new Date(value).format("H:i:s")
+                            }
+                        }
                     },
                     yAxis: {
                         type: 'value',
