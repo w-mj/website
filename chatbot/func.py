@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import requests
@@ -239,9 +240,18 @@ def statistics(request):
     if request.method != 'GET':
         return HttpResponseForbidden()
     if not request.user.is_authenticated:
-        return JsonResponse({'A': 0, 'B': 0, 'C': 0, 'D': 0})
-    A = ChatHistory.objects.filter(user=request.user, emotion__gte=0, emotion__lt=0.25).count()
-    B = ChatHistory.objects.filter(user=request.user, emotion__gte=0.25, emotion__lt=0.5).count()
-    C = ChatHistory.objects.filter(user=request.user, emotion__gte=0.5, emotion__lt=0.75).count()
-    D = ChatHistory.objects.filter(user=request.user, emotion__gte=0.75).count()
-    return JsonResponse({'A': A, 'B': B, 'C': C, 'D': D})
+        return JsonResponse({})
+    chat_history = ChatHistory.objects.filter(user=request.user, is_response=False)
+    A = chat_history.filter(emotion__gte=0, emotion__lt=0.25).count()
+    B = chat_history.filter(emotion__gte=0.25, emotion__lt=0.5).count()
+    C = chat_history.filter(emotion__gte=0.5, emotion__lt=0.75).count()
+    D = chat_history.filter(emotion__gte=0.75, emotion__lte=1).count()
+    result = {
+        'A': A,
+        'B': B,
+        'C': C,
+        'D': D,
+        'detail': [((x.time + datetime.timedelta(hours=8)).strftime("%Y-%m-%d %H:%M:%S"), x.emotion)
+                   for x in chat_history if x.emotion >= 0]
+    }
+    return JsonResponse(result)

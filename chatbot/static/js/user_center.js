@@ -47,6 +47,19 @@ function changePsw() {
     })
 }
 
+function classifyDate(date) {
+    let result = {};
+    for (let i = 0; i < date.length; i++) {
+        let line = date[i];
+        let sp = line[0].split(' ');
+
+        if (!(sp[0] in result))
+            result[sp[0]] = [];
+        result[sp[0]].push(line);
+    }
+    return result;
+}
+
 $(document).ready(function () {
     $("#upload-avatar").fileinput({
         language: 'zh',
@@ -73,29 +86,46 @@ $(document).ready(function () {
         method: 'GET',
         dataType: 'json',
         success: function (response) {
-            // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('emotion-chart'));
-
-        // 指定图表的配置项和数据
-        var option = {
-            series: [{
-                name: '销量',
-                type: 'pie',
-                data: [
-                    {value: response.A, name: '😞'},
-                    {value: response.B, name: '😑'},
-                    {value: response.C, name: '😄'},
-                    {value: response.D, name: '😂'},
-
-                ],
-                label: {
-                    formatter: '{b}: {c}'
-                }
-            }]
-        };
-
-        // 使用刚指定的配置项和数据显示图表。
-        myChart.setOption(option);
+            echarts.init(document.getElementById('emotion-chart')).setOption({
+                series: [{
+                    type: 'pie',
+                    data: [
+                        {value: response.A, name: '😞'},
+                        {value: response.B, name: '😑'},
+                        {value: response.C, name: '😄'},
+                        {value: response.D, name: '😂'},
+                    ],
+                    label: {
+                        formatter: '{b}: {c}'
+                    }
+                }]
+            });
+            let line_chart_data = classifyDate(response.detail);
+            let line_space = $("#emotion-line");
+            line_space.html('');
+            for (let date in line_chart_data) {
+                let time = line_chart_data[date];
+                line_space.append('<div id="line-chart-' + date + '" style="width: 600px;height:200px;"> </div>');
+                echarts.init(document.getElementById('line-chart-' + date)).setOption({
+                    title: {
+                        text: date
+                    },
+                    xAxis: {
+                        type: 'time',
+                        minInterval: 1,
+                    },
+                    yAxis: {
+                        type: 'value',
+                        min: 0,
+                        max: 1,
+                    },
+                    series: [{
+                        type: 'line',
+                        smooth: true,
+                        data: time
+                    }]
+                });
+            }
         }
     })
 });
