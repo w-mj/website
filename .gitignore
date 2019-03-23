@@ -3,3 +3,4 @@ static/*
 website/secrets.py
 upload_secrets.sh
 __pycache__
+my.cnf
