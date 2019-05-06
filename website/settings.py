@@ -27,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = socket.gethostname() == 'DESKTOP-589NS7B'
+DEBUG = socket.gethostname() == 'DESKTOP-0D3RQ6Q'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'fun.alphamj.cn', '123.206.57.166', 'chatbot.alphamj.cn']
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chatbot',
+    'schedule'
 ]
 
 MIDDLEWARE = [
