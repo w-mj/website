@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 import chatbot.views
 import chatbot.auth
 import chatbot.func
+import schedule.urls
 from website import settings
 from .deploy import deploy
 from .captcha import pc_getcaptcha, pc_validate
@@ -46,6 +47,7 @@ urlpatterns = [
     path('pc-geetest/get', pc_getcaptcha),
     path('pc-geetest/validate', pc_validate),
 
+    path('schedule/', include(schedule.urls))
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

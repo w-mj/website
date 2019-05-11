@@ -16,7 +16,7 @@ class Course:
 
     def get_event(self, first_week):
         event = ic.Event()
-        event.add('name', self.name)
+        event.add('summary', self.name)
         event.add('location', self.location)
         event.add('dtstart', first_week + datetime.timedelta(weeks=self.sweek, days=self.day) + self.stime)
         event.add('dtend', first_week + datetime.timedelta(weeks=self.sweek, days=self.day) + self.etime)
@@ -24,6 +24,11 @@ class Course:
             first_week + datetime.timedelta(weeks=self.eweek, days=self.day) + self.etime})
         return event
 
+    def json_dict(self):
+        d = self.__dict__
+        d['stime'] = str(d['stime'])
+        d['etime'] = str(d['etime'])
+        return d
 
 class Schedule:
     def __init__(self):
@@ -36,6 +41,10 @@ class Schedule:
 
     def get_calendar(self):
         calendar = ic.Calendar()
+        calendar.add('X-WR-CALNAME', '课程表')
         for c in self.course_list:
             calendar.add_component(c.get_event(self.first_week))
         return calendar
+
+    def get_json(self):
+        return [c.json_dict() for c in self.course_list]

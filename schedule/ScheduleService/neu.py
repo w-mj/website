@@ -27,6 +27,7 @@ class NEUSchedule(Schedule):
     def __init__(self):
         super().__init__()
         self.first_week = datetime.datetime(year=2019, month=3, day=3, tzinfo=pytz.timezone("Asia/Shanghai"))
+        self.name = None
 
     def update(self, **kwargs):
         login_page_url = "https://pass.neu.edu.cn/tpass/login?service=http%3A%2F%2F219.216.96.4%2Feams%2FhomeExt.action"
@@ -55,7 +56,7 @@ class NEUSchedule(Schedule):
         # _eventId=submit
 
         # page_cookies['neu_cas_un'] = my_neu_id
-        page_cookies.set('neu_cas_un', my_neu_id, domain='pass.neu.edu.cn', path='/')
+        page_cookies.set('neu_cas_un', kwargs['uid'], domain='pass.neu.edu.cn', path='/')
 
         login_response = requests.post(
             "https://pass.neu.edu.cn/tpass/login?service=http%3A%2F%2F219.216.96.4%2Feams%2FhomeExt.action",
@@ -66,13 +67,18 @@ class NEUSchedule(Schedule):
             }),
             cookies=page_cookies,
             data={
-                'rsa': my_neu_id + my_neu_psd + lt,
-                'ul': len(my_neu_id),
-                'pl': len(my_neu_psd),
+                'rsa': kwargs['uid'] + kwargs['password'] + lt,
+                'ul': len(kwargs['uid']),
+                'pl': len(kwargs['password']),
                 'lt': lt,
                 'execution': execution,
                 '_eventId': _eventId
             })
+
+        login_response_page = BeautifulSoup(login_response.content.decode(), features='html.parser')
+        stu_name = login_response_page.find('a', {'class': 'personal-name'}).text.strip()
+        self.name = stu_name.split('(')[0]
+        print(stu_name)
 
         if login_response.content != b'':
             with open('login_response.html', 'w', encoding='utf-8') as f:
@@ -106,11 +112,21 @@ class NEUSchedule(Schedule):
         if table_response.content != b'':
             with open('table.html', 'w', encoding='utf-8') as f:
                 f.write(table_response.content.decode())
+        table_str = table_response.content.decode()
+        table_str = table_str.replace(' ', '')
+        table_str = table_str.replace('\t', '')
+        # table_str = table_str.replace('\r', '').replace('\n', '')
+        with open('table2.html', 'w', encoding='utf-8') as f:
+            f.write(table_str)
+        with open('table2.html', encoding='utf-8') as f:
+            stt = f.read()
+            print(stt == table_str)
+            self.parse_table(stt)
 
-    rep = 'activity=newTaskActivity\(.+,.+,"(.+)","(.+)","(.+)","(.+)","(.+)",.+,.+,.+,.+,.+\);\n' \
-          'index=(\d+)\*unitCount\+(\d+);\n'\
-          'table0\.activities\[index\]\[table0\.activities\[index\]\.length\]=activity;\n'\
-          'index=(\d+)\*unitCount\+(\d+);\n'\
+    rep = 'activity=newTaskActivity\(.+,.+,"(.+)","(.+)","(.+)","(.+)","(.+)",.+,.+,.+,.+,.+\);\n*' \
+          'index=(\d+)\*unitCount\+(\d+);\n*'\
+          'table0\.activities\[index\]\[table0\.activities\[index\]\.length\]=activity;\n*'\
+          'index=(\d+)\*unitCount\+(\d+);\n*'\
           'table0\.activities\[index\]\[table0\.activities\[index\]\.length\]=activity;'
     repc = re.compile(rep)
     start_time_table = [
@@ -170,8 +186,13 @@ class NEUSchedule(Schedule):
 if __name__ == '__main__':
     # get_table()
     s = NEUSchedule()
-    with open('table1.html', 'r', encoding='utf-8') as f:
-        s.parse_table(f.read())
+    s.update(uid=my_neu_id, password=my_neu_psd)
+    # with open('table2.html', 'r', encoding='utf-8') as f:
+    #     stt = f.read()
+    #     s.parse_table(stt)
     calendar = s.get_calendar()
-    print(calendar.to_ical().decode())
+    ics_str = calendar.to_ical().decode()
+    print(ics_str)
+    with open('a.ics', 'w', encoding='utf-8') as f:
+        f.write(ics_str)
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>东北大学学生课程表订阅服务</title>
+</head>
+<body>
+<div style="display: block; margin: 0 auto; width: 50%;">
+    <form id="info_form">
+        {% csrf_token %}
+        <label for="uid">学号</label><br/><input id="uid" placeholder="学号" name="uid">
+        <br />
+        <label for="psd">统一开放平台密码</label><br/><input id="psd" placeholder="统一开放平台密码" name="password">
+        <br/>
+    </form>
+            <button onclick="get_schedule()">获取课程表</button>
+
+    <div id="response">
+
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    function get_schedule() {
+        $.ajax({
+            url: '/schedule/neu/',
+            method: 'POST',
+            data: $('#info_form').serializeArray(),
+            contentType: 'form-data',
+            success: function (r) {
+                console.log(r);
+                $("#response").html(r);
+            }
+        })
+    }
+</script>
+</body>
+</html>
