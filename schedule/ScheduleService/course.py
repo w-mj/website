@@ -18,8 +18,8 @@ class Course:
         event = ic.Event()
         event.add('summary', self.name)
         event.add('location', self.location)
-        event.add('dtstart', first_week + datetime.timedelta(weeks=self.sweek, days=self.day) + self.stime)
-        event.add('dtend', first_week + datetime.timedelta(weeks=self.sweek, days=self.day) + self.etime)
+        event.add('dtstart', first_week + datetime.timedelta(weeks=self.sweek - 1, days=self.day) + self.stime)
+        event.add('dtend', first_week + datetime.timedelta(weeks=self.sweek - 1, days=self.day) + self.etime)
         event.add('rrule', {'freq': 'weekly', 'until':
             first_week + datetime.timedelta(weeks=self.eweek, days=self.day) + self.etime})
         return event

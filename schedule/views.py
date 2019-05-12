@@ -24,7 +24,8 @@ def neu(request):
             stu = NEUStudent(uid=uid)
             stu.update_time = datetime.datetime.now()
         schedule = NEUSchedule()
-        schedule.update(uid=uid, password=password)
+        if schedule.update(uid=uid, password=password) is False:
+            return HttpResponse("登录失败")
         base_dir = os.path.dirname(os.path.abspath(__name__))
         ics_dir = os.path.join(base_dir, 'media', 'ics', 'neu')
         filename = os.path.join(ics_dir, uid + '.ics')
@@ -34,8 +35,8 @@ def neu(request):
         stu.save()
         r = schedule.get_json()
         r = {'schedule': r, 'url': 'http://fun.alphamj.cn/schedule/neu/' + uid}
-        js = json.dumps(r)
-        return HttpResponse(js)
+        # js = json.dumps(r)
+        return render(request, 'neu_table.html', r)
     else:
         return HttpResponse('?')
 

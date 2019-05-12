@@ -1,0 +1,23 @@
+<p>订阅链接：{{ url }}</p>
+<table border="1">
+    <tbody>
+    <tr>
+        <th>编号</th>
+        <th>名称</th>
+        <th>地点</th>
+        <th>时间</th>
+        <th>星期</th>
+        <th>起止周</th>
+    </tr>
+    {% for c in schedule %}
+        <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.location }}</td>
+            <td>{{ c.stime }}-{{ c.etime }}</td>
+            <td>{{ c.day }}</td>
+            <td>{{ c.sweek }}-{{ c.eweek }}周</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

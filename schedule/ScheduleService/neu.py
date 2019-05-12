@@ -76,7 +76,10 @@ class NEUSchedule(Schedule):
             })
 
         login_response_page = BeautifulSoup(login_response.content.decode(), features='html.parser')
-        stu_name = login_response_page.find('a', {'class': 'personal-name'}).text.strip()
+        stu_name = login_response_page.find('a', {'class': 'personal-name'})
+        if stu_name is None:
+            return False
+        stu_name = stu_name.text.strip()
         self.name = stu_name.split('(')[0]
         print(stu_name)
 
@@ -122,6 +125,7 @@ class NEUSchedule(Schedule):
             stt = f.read()
             print(stt == table_str)
             self.parse_table(stt)
+        return True
 
     rep = 'activity=newTaskActivity\(.+,.+,"(.+)","(.+)","(.+)","(.+)","(.+)",.+,.+,.+,.+,.+\);\n*' \
           'index=(\d+)\*unitCount\+(\d+);\n*'\
@@ -169,7 +173,7 @@ class NEUSchedule(Schedule):
             start_week = 0
             for i in range(len(course[4])):
                 if course[4][i] == '0' and (i == len(course[4]) - 1 or course[4][i + 1] == '1'):
-                    start_week = i
+                    start_week = i + 1
                 elif course[4][i] == '1' and (i == len(course[4]) - 1 or course[4][i + 1] == '0'):
                     c = Course()
                     c.id = course[0]

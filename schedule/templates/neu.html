@@ -5,15 +5,18 @@
     <title>东北大学学生课程表订阅服务</title>
 </head>
 <body>
+
 <div style="display: block; margin: 0 auto; width: 50%;">
+    <h1>东北大学学生课程表订阅服务</h1>
+    <p>当前学期：2018-2019春季学期</p>
     <form id="info_form">
         {% csrf_token %}
         <label for="uid">学号</label><br/><input id="uid" placeholder="学号" name="uid">
-        <br />
+        <br/>
         <label for="psd">统一开放平台密码</label><br/><input id="psd" placeholder="统一开放平台密码" name="password">
         <br/>
     </form>
-            <button onclick="get_schedule()">获取课程表</button>
+    <button onclick="get_schedule()">获取课程表</button>
 
     <div id="response">
 
