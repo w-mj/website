@@ -46,6 +46,6 @@ def neu_ics(request, uid):
     filename = os.path.join(ics_dir, uid + '.ics')
     try:
         with open(filename, encoding='utf-8') as f:
-            return HttpResponse(f.read())
+            return HttpResponse(f.read(), content_type='text/calendar; charset=UTF-8')
     except FileNotFoundError:
         return HttpResponseNotFound()

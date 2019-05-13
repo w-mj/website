@@ -21,7 +21,7 @@ class Course:
         event.add('dtstart', first_week + datetime.timedelta(weeks=self.sweek - 1, days=self.day) + self.stime)
         event.add('dtend', first_week + datetime.timedelta(weeks=self.sweek - 1, days=self.day) + self.etime)
         event.add('rrule', {'freq': 'weekly', 'until':
-            first_week + datetime.timedelta(weeks=self.eweek, days=self.day) + self.etime})
+            first_week + datetime.timedelta(weeks=self.eweek - 1, days=self.day) + self.etime})
         return event
 
     def json_dict(self):
