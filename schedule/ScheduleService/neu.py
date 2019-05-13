@@ -98,6 +98,10 @@ class NEUSchedule(Schedule):
                 print(c)
                 cookies_209.set_cookie(c)
 
+        ids_url = 'http://219.216.96.4/eams/courseTableForStd.action?_=1557724872728'
+        ids_response = requests.get(ids_url, cookies=cookies_209)
+        ids = re.findall('bg\.form\.addInput\(form,"ids","(.+)"\);', ids_response.content.decode())
+
         table_url = 'http://219.216.96.4/eams/courseTableForStd!courseTable.action'
         # semester.id=30: 2018-2019春季学期
         table_response = requests.post(table_url, cookies=cookies_209, headers=dict(headers, **{
@@ -110,7 +114,7 @@ class NEUSchedule(Schedule):
             'setting.kind': 'std',
             'startWeek': '',
             'semester.id': '30',
-            'ids': '6869'
+            'ids': ids[0]
         })
         if table_response.content != b'':
             with open('table.html', 'w', encoding='utf-8') as f:

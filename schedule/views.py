@@ -34,7 +34,7 @@ def neu(request):
         stu.name = schedule.name
         stu.save()
         r = schedule.get_json()
-        r = {'schedule': r, 'url': 'http://fun.alphamj.cn/schedule/neu/' + uid}
+        r = {'schedule': r, 'url': 'https://fun.alphamj.cn/schedule/neu/' + uid}
         # js = json.dumps(r)
         return render(request, 'neu_table.html', r)
     else:
