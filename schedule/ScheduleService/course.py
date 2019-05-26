@@ -17,6 +17,7 @@ class Course:
     def get_event(self, first_week):
         event = ic.Event()
         event.add('summary', self.name)
+        event.add('uid', self.id + str(self.sweek) + str(self.day) + str(self.eweek))
         event.add('location', self.location)
         event.add('description', self.location)
         event.add('dtstart', first_week + datetime.timedelta(weeks=self.sweek - 1, days=self.day) + self.stime)
