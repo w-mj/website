@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>对话情感标记系统</title>
+</head>
+<body>
+<h1>对话情感标记系统</h1>
+<form>
+{% csrf_token %}
+</form>
+{% if login == False %}
+    <form action="/label" method="get">
+        <label>
+            请输入用户名
+            <input type="text" name="uname">
+        </label>
+        <input type="submit" value="进入">
+    </form>
+{% else %}
+    <div>
+    <p>欢迎您：{{ user.name }}&nbsp;当前进度：<span id="dialog-id"></span>/{{ count }}</p>
+    </div>
+    <div id="dialog-area">
+
+    </div>
+    <div>
+    <p>提示:</p>
+    <ul>
+        <li><p>乐：快乐、安心</p></li>
+        <li><p>好：尊敬、赞扬、相信、喜爱、祝愿</p></li>
+        <li><p>哀：悲伤、失望、疚、思</p></li>
+        <li><p>惧：慌、恐惧、羞</p></li>
+        <li><p>恶：烦闷、憎恶、贬责、妒忌、怀疑</p></li>
+    </ul>
+    </div>
+    <script>
+        function parseDialog(data) {
+            $("#dialog-id").html(data['did']);
+            let tb = "<table><tbody>";
+            let i = 0;
+            for (;i < data['text'].length; i++) {
+                tb += "<tr><td>" + data['text'][i] + "</td>" +
+                    "<td><select id=\"sen"+i+"\">" + $("#select-list").html() + "</select>" +
+                    "</td><tr>"
+            }
+            tb += "<tr><td>" +
+                    "<input hidden=hidden value='over' id=\"sen"+i+"\"\>"+
+                "</td><td><button onclick=\"submit()\">提交</button></td></tr>";
+            tb += "</tbody></table>";
+            $("#dialog-area").html(tb);
+        }
+        function getDialog() {
+            $.ajax({
+                url: '/label/getdialog?uid={{ user.id }}',
+                method: 'get',
+                type: 'json',
+                success: function (data) {
+                    parseDialog(data);
+                }
+            })
+        }
+
+        function submit() {
+            let i = 0;
+            let ans = "";
+            let t;
+            do {
+                t = $("#sen"+i).val();
+                if (t === "over")
+                    break;
+                if (t === "0")
+                    return;
+                ans += t;
+                i++;
+            } while(true);
+            console.log(ans);
+            $.ajax({
+                url: '/label/labeldialog',
+                method: 'post',
+                dataType: 'json',
+                data: {
+                    "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
+                    "label": ans,
+                    "did": $("#dialog-id").html(),
+                    "uid": {{ user.id }}
+                },
+                success: function (data) {
+                    parseDialog(data);
+                }
+            })
+        }
+        $(document).ready(function () {
+            getDialog();
+        })
+    </script>
+
+    <div style="display: none;">
+        <select id="select-list">
+          <option value ="0">请选择</option>
+          <option value ="1">乐</option>
+          <option value ="2">好</option>
+          <option value ="3">哀</option>
+          <option value ="4">惧</option>
+          <option value ="5">恶</option>
+          <option value ="6">无</option>
+        </select>
+    </div>
+
+{% endif %}
+
+</body>
+</html>

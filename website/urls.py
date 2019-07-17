@@ -19,6 +19,7 @@ from django.urls import path, include
 import chatbot.views
 import chatbot.auth
 import chatbot.func
+import dialog_label.urls
 import schedule.urls
 from website import settings
 from .deploy import deploy
@@ -47,7 +48,9 @@ urlpatterns = [
     path('pc-geetest/get', pc_getcaptcha),
     path('pc-geetest/validate', pc_validate),
 
-    path('schedule/', include(schedule.urls))
+    path('schedule/', include(schedule.urls)),
+    path('label/', include(dialog_label.urls))
+
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
