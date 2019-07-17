@@ -14,7 +14,7 @@ from schedule.models import NEUStudent
 @csrf_exempt
 def neu(request):
     if request.method == 'GET':
-        return render(request, 'neu.html')
+        return render(request, 'schedule/neu.html')
     elif request.method == 'POST':
         uid = request.POST['uid']
         password = request.POST['password']
@@ -36,7 +36,7 @@ def neu(request):
         r = schedule.get_json()
         r = {'schedule': r, 'url': 'https://fun.alphamj.cn/schedule/neu/' + uid}
         # js = json.dumps(r)
-        return render(request, 'neu_table.html', r)
+        return render(request, 'schedule/neu_table.html', r)
     else:
         return HttpResponse('?')
 
