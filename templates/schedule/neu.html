@@ -33,6 +33,8 @@
             success: function (r) {
                 console.log(r);
                 $("#response").html(r);
+            }, fail: (e) => {
+                $("#response").html(e);
             }
         })
     }

@@ -116,25 +116,25 @@ class NEUSchedule(Schedule):
             'semester.id': '30',
             'ids': ids[0]
         })
-        if table_response.content != b'':
-            with open('table.html', 'w', encoding='utf-8') as f:
-                f.write(table_response.content.decode())
+        # if table_response.content != b'':
+        #     with open('table.html', 'w', encoding='utf-8') as f:
+        #         f.write(table_response.content.decode())
         table_str = table_response.content.decode()
         table_str = table_str.replace(' ', '')
         table_str = table_str.replace('\t', '')
         # table_str = table_str.replace('\r', '').replace('\n', '')
-        with open('table2.html', 'w', encoding='utf-8') as f:
-            f.write(table_str)
-        with open('table2.html', encoding='utf-8') as f:
-            stt = f.read()
-            print(stt == table_str)
-            self.parse_table(stt)
+        # with open('table2.html', 'w', encoding='utf-8') as f:
+        #     f.write(table_str)
+        # with open('table2.html', encoding='utf-8') as f:
+        #     stt = f.read()
+        #     print(stt == table_str)
+        self.parse_table(table_str)
         return True
 
-    rep = 'activity=newTaskActivity\(.+,.+,"(.+)","(.+)","(.+)","(.+)","(.+)",.+,.+,.+,.+,.+\);\n*' \
-          'index=(\d+)\*unitCount\+(\d+);\n*'\
-          'table0\.activities\[index\]\[table0\.activities\[index\]\.length\]=activity;\n*'\
-          'index=(\d+)\*unitCount\+(\d+);\n*'\
+    rep = 'activity=newTaskActivity\(.+,.+,"(.+)","(.+)","(.+)","(.+)","(.+)",.+,.+,.+,.+,.+\);(?:\n|\r)*' \
+          'index=(\d+)\*unitCount\+(\d+);(?:\n|\r)*'\
+          'table0\.activities\[index\]\[table0\.activities\[index\]\.length\]=activity;(?:\n|\r)*'\
+          'index=(\d+)\*unitCount\+(\d+);(?:\n|\r)*'\
           'table0\.activities\[index\]\[table0\.activities\[index\]\.length\]=activity;'
     repc = re.compile(rep)
     start_time_table = [
@@ -181,7 +181,7 @@ class NEUSchedule(Schedule):
                 elif course[4][i] == '1' and (i == len(course[4]) - 1 or course[4][i + 1] == '0'):
                     c = Course()
                     c.id = course[0]
-                    c.name = course[1]
+                    c.name = course[1].split('(')[0] + "@" + course[3]
                     c.location = course[3]
                     c.day = (int(course[5]) + 1) % 7
                     c.sweek = start_week
@@ -192,10 +192,9 @@ class NEUSchedule(Schedule):
 
 
 if __name__ == '__main__':
-    # get_table()
     s = NEUSchedule()
     s.update(uid=my_neu_id, password=my_neu_psd)
-    # with open('table2.html', 'r', encoding='utf-8') as f:
+    # with open('../../table2.html', 'r', encoding='utf-8') as f:
     #     stt = f.read()
     #     s.parse_table(stt)
     calendar = s.get_calendar()
