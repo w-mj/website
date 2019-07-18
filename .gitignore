@@ -7,3 +7,4 @@ my.cnf
 schedule/ScheduleService/*.html
 *.html
 *.ics
+db.sqlite3
