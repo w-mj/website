@@ -18,7 +18,7 @@ def get_dialog(request):
     if uname is None or models.RegisteredUser.objects.filter(id=uname).count() == 0:
         return render(request, 'dialog_label/index.html', {'user': None})
     user = models.RegisteredUser.objects.get(id=uname)
-    index = models.Label.objects.filter(user=user).filter().count()
+    index = user.index
     dialog = models.Dialog.objects.get(id=index)
     return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
 
@@ -55,6 +55,8 @@ def label(request):
     label_item.user = user
     label_item.save()
     index = int(did) + 1
+    user.index = index
+    user.save()
     dialog = models.Dialog.objects.get(id=index)
     return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
 

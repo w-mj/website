@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.shortcuts import render
 from django.urls import path, include
 import chatbot.views
 import chatbot.auth
@@ -24,6 +25,9 @@ import schedule.urls
 from website import settings
 from .deploy import deploy
 from .captcha import pc_getcaptcha, pc_validate
+
+def a(request):
+    return render(request, 'a.html')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,7 +53,9 @@ urlpatterns = [
     path('pc-geetest/validate', pc_validate),
 
     path('schedule/', include(schedule.urls)),
-    path('label/', include(dialog_label.urls))
+    path('label/', include(dialog_label.urls)),
+
+    path('a/', a)
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -11,6 +11,9 @@ class Dialog(models.Model):
 
 class RegisteredUser(models.Model):
     name = models.TextField()
+    start = models.IntegerField()
+    end = models.IntegerField()
+    index = models.IntegerField()
 
     def __str__(self):
         return self.name
