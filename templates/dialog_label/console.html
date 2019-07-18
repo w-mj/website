@@ -16,7 +16,7 @@
                 <tr>
                     <td>{{ u.id }}</td>
                     <td>{{ u.name }}</td>
-                    <td>{{ v }}/{{ count }}</td>
+                    <td>{{ u.index }}/{{ u.end }}</td>
                     <td><button><a href="/label/download?uid={{ u.id }}">下载</a></button></td>
                 </tr>
             {% endfor %}

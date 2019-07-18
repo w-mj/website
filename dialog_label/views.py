@@ -8,7 +8,7 @@ from dialog_label import models
 @require_GET
 def console(request):
     users = models.RegisteredUser.objects.all()
-    data = {u: u.end - u.start for u in users}
+    data = {u: u.index - u.start for u in users}
     count = models.Dialog.objects.count()
     return render(request, 'dialog_label/console.html', {'users': data, 'count': count})
 
