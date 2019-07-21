@@ -34,10 +34,20 @@ def return_dialog(user):
         labels = qs.values_list('text_id', flat=True).distinct()
         for text_id in labels:
             label_in = qs.filter(text_id=text_id)
-            print(label_in[0].label, label_in[1].label)
-            if label_in.count() == 2 and label_in[0].label != label_in[1].label:
-                dialog = label_in[0].text
-                return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
+            if label_in.count() >= 2:
+                same = True
+                for i in range(len(label_in)):
+                    print(label_in[i].label, end=' ')
+                    if label_in[i].user == user:
+                        same = True
+                        break
+                    if i < len(label_in) - 1 and label_in[i].label != label_in[i + 1].label:
+                        same = False
+
+                print()
+                if not same:
+                    dialog = label_in[0].text
+                    return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
         # 高级用户
         # labels = models.Label.objects.
         return JsonResponse({'did': -1, 'text': ["没有更多对话了"]})
@@ -72,11 +82,16 @@ def label(request):
 
     user = models.RegisteredUser.objects.get(id=uid)
 
-    label_item = models.Label()
-    label_item.label = int(str(ls))
-    label_item.text = models.Dialog.objects.get(id=did)
-    label_item.user = user
-    label_item.save()
+    try:
+        label1 = models.Label.objects.get(user=user, text_id=did)
+        label1.label = ls
+        label1.save()
+    except models.Label.DoesNotExist:
+        label_item = models.Label()
+        label_item.label = int(str(ls))
+        label_item.text = models.Dialog.objects.get(id=did)
+        label_item.user = user
+        label_item.save()
     index = int(did) + 1
     user.index = index
     user.save()

@@ -8,3 +8,4 @@ schedule/ScheduleService/*.html
 *.html
 *.ics
 db.sqlite3
+migrations/
