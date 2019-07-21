@@ -116,6 +116,7 @@
                             "uid": vm.user.id
                         },
                         success: function (data) {
+                            console.log(data)
                             if (data['result'] === 'ok')
                                 getDialog()
                         }
