@@ -11,8 +11,8 @@ def console(request):
     users = models.RegisteredUser.objects.all()
     data = {u: u.index - u.start for u in users}
     count = models.Dialog.objects.count()
-    deleted = models.Dialog.objects.filter(is_deleted=True)
-    return render(request, 'dialog_label/console.html', {'users': data, 'count': count, 'deleted': deleted})
+    deleted = models.Dialog.objects.filter(is_deleted=True).count()
+    return render(request, 'dialog_label/console.html', {'users': data, 'count': count, 'deleted_count': deleted})
 
 
 def return_dialog(user):
@@ -124,11 +124,19 @@ def upload(request):
 sent_dict = ['ER', '乐', '好', '哀', '惧', '恶', '无']
 
 
+def download_deleted(request):
+    deleted = models.Dialog.objects.all()
+    res = {k.id: 1 if k.is_deleted else 0 for k in deleted}
+    return JsonResponse(res)
+
+
 def download(request):
     uid = request.GET.get('uid', None)
     if uid is None:
         return HttpResponse("no content")
     try:
+        if uid == "deleted":
+            return download_deleted(request)
         user = models.RegisteredUser.objects.get(id=uid)
     except models.RegisteredUser.DoesNotExist:
         return HttpResponse("no content")

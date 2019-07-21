@@ -20,6 +20,12 @@
                     <td><button><a href="/label/download?uid={{ u.id }}">下载</a></button></td>
                 </tr>
             {% endfor %}
+                <tr>
+                    <td>对话是否被删除</td>
+                    <td>
+                        <button><a href="/label/download?uid=deleted">下载</a></button>
+                    </td>
+                </tr>
         </tbody>
     </table>
     <p>
@@ -28,14 +34,7 @@
     <p>
         0:错误, 1:乐, 2:好, 3:哀, 4:惧, 5:恶, 6:无
     </p>
-    {% if deleted.count > 0 %}
-        <p>被删除的对话:</p>
-        <ul>
-            {% for d in deleted %}
-                <li>{{ d.text }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+
 </div>
 
 <p>

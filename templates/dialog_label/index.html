@@ -148,6 +148,7 @@
         function parseDialog(data) {
             vm.did = data['did'];
             vm.sentences = data['text'].map(i=>{ return {sen: i, label: "0"}});
+            vm.userchoice = [];
             if (data['userchoice'])
                 vm.userchoice = data['userchoice']
         }
