@@ -1,3 +1,4 @@
+from django.db.models import Avg
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST, require_GET
@@ -13,14 +14,41 @@ def console(request):
     return render(request, 'dialog_label/console.html', {'users': data, 'count': count})
 
 
+def return_dialog(user):
+    if user.rank < 5:
+        # 普通用户
+        index = index0 = user.index
+        if index == user.end:
+            return JsonResponse({'did': -1, 'text': ["没有更多对话了"]})
+
+        dialog = models.Dialog.objects.get(id=index)
+        while dialog.is_deleted:
+            index += 1
+            dialog = models.Dialog.objects.get(id=index)
+        if index != index0:
+            user.index = index
+            user.save()
+        return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
+    else:
+        qs = models.Label.objects.all()
+        labels = qs.values_list('text_id', flat=True).distinct()
+        for text_id in labels:
+            label_in = qs.filter(text_id=text_id)
+            print(label_in[0].label, label_in[1].label)
+            if label_in.count() == 2 and label_in[0].label != label_in[1].label:
+                dialog = label_in[0].text
+                return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
+        # 高级用户
+        # labels = models.Label.objects.
+        return JsonResponse({'did': -1, 'text': ["没有更多对话了"]})
+
+
 def get_dialog(request):
     uname = request.GET.get('uid', None)
     if uname is None or models.RegisteredUser.objects.filter(id=uname).count() == 0:
         return render(request, 'dialog_label/index.html', {'user': None})
     user = models.RegisteredUser.objects.get(id=uname)
-    index = user.index
-    dialog = models.Dialog.objects.get(id=index)
-    return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
+    return return_dialog(user)
 
 
 def index(request):
@@ -28,10 +56,10 @@ def index(request):
     if uname is None or models.RegisteredUser.objects.filter(name=uname).count() == 0:
         return render(request, 'dialog_label/index.html', {'login': False})
     else:
+        user = models.RegisteredUser.objects.get(name=uname)
         return render(request, 'dialog_label/index.html',
                       {'login': True,
-                       'user': models.RegisteredUser.objects.get(name=uname),
-                       'count': models.Dialog.objects.count()
+                       'user': user.json()
                        })
 
 
@@ -41,24 +69,18 @@ def label(request):
     did = request.POST['did']
     if not ls or not uid or not did:
         return JsonResponse({'result': 'error'})
-    label_value = 0
-    ls = reversed(ls)
-    # print(ls)
 
-    for c in ls:
-        label_value = (label_value << 3) + int(c)
     user = models.RegisteredUser.objects.get(id=uid)
 
     label_item = models.Label()
-    label_item.label = label_value
+    label_item.label = int(str(ls))
     label_item.text = models.Dialog.objects.get(id=did)
     label_item.user = user
     label_item.save()
     index = int(did) + 1
     user.index = index
     user.save()
-    dialog = models.Dialog.objects.get(id=index)
-    return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
+    return return_dialog(user)
 
 
 def clear(request):
@@ -90,14 +112,21 @@ def download(request):
         user = models.RegisteredUser.objects.get(id=uid)
     except models.RegisteredUser.DoesNotExist:
         return HttpResponse("no content")
-    response = ""
     labels = models.Label.objects.filter(user=user)
-    for label in labels:
-        label_v = []
-        t = label.label
-        while t > 0:
-            label_v.append(t & 7)
-            t = t >> 3
-        label_s = [sent_dict[x] for x in label_v]
-        response += "{}:".format(label.text.id) + "".join(label_s) + "\n"
-    return HttpResponse(response)
+    labels = [x.dict() for x in labels]
+    return JsonResponse({'user': uid, 'labels': labels})
+
+
+def delete(request):
+    uid = request.POST['uid']
+    did = request.POST['did']
+    try:
+        user = models.RegisteredUser.objects.get(id=uid)
+        if user.rank < 5:
+            return JsonResponse({"result": "fail1"})
+        dialog = models.Dialog.objects.get(id=did)
+        dialog.is_deleted = True
+        dialog.save()
+    except models.RegisteredUser.DoesNotExist:
+        return JsonResponse({"result": "fail"})
+
