@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'website.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-if DEBUG:
+if socket.gethostname() == 'DESKTOP-0D3RQ6Q':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
