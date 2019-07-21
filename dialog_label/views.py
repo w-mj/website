@@ -11,7 +11,8 @@ def console(request):
     users = models.RegisteredUser.objects.all()
     data = {u: u.index - u.start for u in users}
     count = models.Dialog.objects.count()
-    return render(request, 'dialog_label/console.html', {'users': data, 'count': count})
+    deleted = models.Dialog.objects.filter(is_deleted=True)
+    return render(request, 'dialog_label/console.html', {'users': data, 'count': count, 'deleted': deleted})
 
 
 def return_dialog(user):
