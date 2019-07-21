@@ -33,18 +33,21 @@ def return_dialog(user):
         qs = models.Label.objects.all()
         labels = qs.values_list('text_id', flat=True).distinct()
         for text_id in labels:
+            dialog = models.Dialog.objects.get(id=text_id)
+            if dialog.is_deleted:
+                continue
             label_in = qs.filter(text_id=text_id)
             if label_in.count() >= 2:
                 same = True
                 for i in range(len(label_in)):
-                    print(label_in[i].label, end=' ')
+                    # print(label_in[i].label, end=' ')
                     if label_in[i].user == user:
                         same = True
                         break
                     if i < len(label_in) - 1 and label_in[i].label != label_in[i + 1].label:
                         same = False
 
-                print()
+                # print()
                 if not same:
                     dialog = label_in[0].text
                     return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
@@ -135,6 +138,7 @@ def download(request):
 def delete(request):
     uid = request.POST['uid']
     did = request.POST['did']
+    print("delete", uid, did)
     try:
         user = models.RegisteredUser.objects.get(id=uid)
         if user.rank < 5:
@@ -142,6 +146,7 @@ def delete(request):
         dialog = models.Dialog.objects.get(id=did)
         dialog.is_deleted = True
         dialog.save()
+        return JsonResponse({"result": "ok"})
     except models.RegisteredUser.DoesNotExist:
         return JsonResponse({"result": "fail"})
 

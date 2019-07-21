@@ -105,7 +105,21 @@
                     });
                 },
                 delete_dialog: function(event) {
-                    console.log("delete")
+                    console.log("delete");
+                    $.ajax({
+                        url: '/label/deletedialog',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {
+                            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val(),
+                            "did": vm.did,
+                            "uid": vm.user.id
+                        },
+                        success: function (data) {
+                            if (data['result'] === 'ok')
+                                getDialog()
+                        }
+                    });
                 }
             }
         });

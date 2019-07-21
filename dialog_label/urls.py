@@ -10,5 +10,6 @@ urlpatterns = [
     path('console/', views.console),
     path('uploadfile', views.upload),
     path('download', views.download),
+    path('deletedialog', views.delete)
 ]
 

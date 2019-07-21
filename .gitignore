@@ -7,4 +7,4 @@ my.cnf
 schedule/ScheduleService/*.html
 *.ics
 db.sqlite3
-**/migrations/
+**/migrations/*
