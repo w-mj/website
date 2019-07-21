@@ -34,5 +34,7 @@ class Label(models.Model):
     def __str__(self):
         return self.user.name + ":" + str(self.label)
 
-    def dict(self):
+    def dict(self, user=False):
+        if user:
+            return {self.user.name: self.label}
         return {self.text_id: self.label}

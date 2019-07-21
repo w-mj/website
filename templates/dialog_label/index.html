@@ -30,6 +30,20 @@
 
     <div id="dialog-area">
     {% verbatim %}
+        <div v-if="userchoice.length > 0">
+            <table>
+                <thead>
+                    <tr>
+                        <td colspan="2">其他用户的选择</td>
+                    </tr>
+                    <tr v-for="user in userchoice">
+                        <td>{{ Object.keys(user)[0] }}:</td>
+                        <td>{{ toEmo(user[Object.keys(user)[0]]) }}</td>
+                    </tr>
+                </thead>
+            </table>
+            <p></p>
+        </div>
         <table>
             <tbody>
                 <tr v-for="(sen, index) in sentences">
@@ -74,6 +88,7 @@
                 {sen: "宝塔镇河妖", label: "0"},
                 {sen: "小鸡炖蘑菇", label: "0"},
             ],
+            userchoice: [],
         {% autoescape off %}
             user: {{ user }}
         {% endautoescape %}
@@ -116,11 +131,16 @@
                             "uid": vm.user.id
                         },
                         success: function (data) {
-                            console.log(data)
+                            console.log(data);
                             if (data['result'] === 'ok')
                                 getDialog()
                         }
                     });
+                },
+                toEmo: function (n) {
+                    n = n.toString().split('');
+                    n = n.map(i=>dt[i]);
+                    return n.join("");
                 }
             }
         });
@@ -128,6 +148,8 @@
         function parseDialog(data) {
             vm.did = data['did'];
             vm.sentences = data['text'].map(i=>{ return {sen: i, label: "0"}});
+            if (data['userchoice'])
+                vm.userchoice = data['userchoice']
         }
         function getDialog() {
             $.ajax({
@@ -139,6 +161,8 @@
                 }
             })
         }
+        dt = {"0": "E", "1":'乐', "2":'好', "3":'哀', "4":'惧', "5":'恶'};
+
         $(document).ready(function () {
             getDialog();
          });

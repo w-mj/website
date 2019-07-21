@@ -50,7 +50,8 @@ def return_dialog(user):
                 # print()
                 if not same:
                     dialog = label_in[0].text
-                    return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__')})
+                    return JsonResponse({'did': dialog.id, 'text': dialog.text.split('__eou__'),
+                                         'userchoice': [x.dict(True) for x in label_in]})
         # 高级用户
         # labels = models.Label.objects.
         return JsonResponse({'did': -1, 'text': ["没有更多对话了"]})
