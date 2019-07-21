@@ -28,11 +28,14 @@
     <p>
         0:错误, 1:乐, 2:好, 3:哀, 4:惧, 5:恶, 6:无
     </p>
-    <ul>
-        {% for d in deleted %}
-            <li>{{ d.text }}</li>
-        {% endfor %}
-    </ul>
+    {% if deleted.count > 0 %}
+        <p>被删除的对话:</p>
+        <ul>
+            {% for d in deleted %}
+                <li>{{ d.text }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 </div>
 
 <p>
