@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>对话情感标记后台</title>
+</head>
+<body>
+
+<div>
+    <table border="1">
+        <thead>
+            <tr><th>id</th><th>用户</th><th>进度</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+            {% for u,v in users.items %}
+                <tr>
+                    <td>{{ u.id }}</td>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.index }}/{{ u.end }}</td>
+                    <td><button><a href="/label/download?uid={{ u.id }}">下载</a></button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>
+        标签说明：
+    </p>
+    <p>
+        0:错误, 1:乐, 2:好, 3:哀, 4:惧, 5:恶, 6:无
+    </p>
+</div>
+
+<p>
+</p>
+<p>
+</p>
+{% if count == 0 %}
+<div>
+    <form  enctype="multipart/form-data" action="/label/uploadfile" method="post">
+        {% csrf_token %}
+        <input type="file" name="dialog">
+        <input type="submit" value="提交"/>
+    </form>
+</div>
+{% endif %}
+</body>
+</html>

@@ -5,7 +5,6 @@ upload_secrets.sh
 __pycache__
 my.cnf
 schedule/ScheduleService/*.html
-*.html
 *.ics
 db.sqlite3
 **/migrations/

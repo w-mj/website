@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $.ajax({
+            url: 'https://alphamj.cn/_ave.php',
+            method: 'GET',
+            success(data) {
+                console.log(data)
+            },
+            complete(data) {
+                console.log(data)
+            }
+        })
+    </script>
+</body>
+</html>

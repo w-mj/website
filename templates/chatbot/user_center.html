@@ -1,0 +1,142 @@
+{% extends 'chatbot/nav.html' %}
+{% block content %}
+{% load staticfiles %}
+
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/css/fileinput.min.css" integrity="sha384-Nt0CAtVIHpKKNv40T6LK2b4T1OuvzoIUgZC1SCmbZBldI70Aba6SZb0/r7BWsOoW" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/solid.css" integrity="sha384-r/k8YTFqmlOaqRkZuSiE9trsrDXkh07mRaoGBMoDcmA58OHILZPsk29i2BsFng1B" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/fontawesome.css" integrity="sha384-4aon80D8rXCGx9ayDt85LbyUHeMWd3UiBaWliBlJ53yzm9hqN21A+o1pqoyK04h+" crossorigin="anonymous">
+<script src="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/js/plugins/piexif.min.js" integrity="sha384-LBn99WQzkTDqv2h5L8yIOywHmqQvPsnkZZwxIg5ikQnHP2WbXhrKdLsUF65TgANs" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/js/fileinput.min.js" integrity="sha384-HMOvn1LNz/lKFrXc6tMWmews7b9HBevcQclM16BJSYC8V3CqSEI/kArTb0g9Zym/" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/themes/fas/theme.min.js" integrity="sha384-w1DWvuVLCI1ZjFufCedwA4S4ZnhWQ0FKxi3gQ+8KDgKgbRF7+ds9AWyM/P4ce991" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap-fileinput/4.5.2/js/locales/zh.min.js" integrity="sha384-ZZ4efga/nsThNxTvT2nayjsb0LhXU1y0kakhVkSRmZVDX73HW7+wCMmGIEFKqX9w" crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts.min.js" integrity="sha384-hwBKpsoiRv7DCatNDBk5X7DXMafNnRzdoBy9G8ja/qZpoFR7mziSQjnnFk5F68ow" crossorigin="anonymous"></script>
+
+<script src="{% static 'js/gt.js' %}"></script>
+<script src="{% static 'js/captcha.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/user_center.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/date.format.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
+
+<div class="modal fade" id="upload-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">上传新头像</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                 <input id="upload-avatar" type="file" name="upload-avatar">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="delete-history" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">确认删除</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        您确定要删除聊天记录吗？此操作不可撤销。
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal"
+                onclick="delete_history()">确认删除</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-3">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-analysis-tab" data-toggle="pill" href="#v-pills-analysis" role="tab"
+                   aria-controls="v-pills-analysis" aria-selected="true">情感分析</a>
+                <a class="nav-link" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab"
+                   aria-controls="v-pills-home" aria-selected="false">个人信息</a>
+                <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab"
+                   aria-controls="v-pills-profile" aria-selected="false">修改密码</a>
+            </div>
+        </div>
+        <div class="col-1">&nbsp;</div>
+        <div class="col-7">
+
+            <div class="tab-content" id="v-pills-tabContent">
+
+                <div class="tab-pane fade show active" id="v-pills-analysis" role="tabpanel" aria-labelledby="v-pills-analysis-tab">
+                    <h3>对话情绪统计</h3>
+                    <div id="emotion-line">
+                        <div class="loading"></div>
+                    </div>
+                    <div id="emotion-chart" style="width: 300px;height:200px;">
+                        <div class="loading"></div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade show" id="v-pills-home" role="tabpanel"
+                     aria-labelledby="v-pills-home-tab">
+                    <h3>修改头像</h3>
+                    <div class="card" style="width: 18rem;">
+                      <img src="{{ current_user.avatar.avatar.url }}" class="card-img-top" alt="...">
+                      <div class="card-body">
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#upload-modal">上传新头像</a>
+                      </div>
+                    </div>
+                    <hr class="my-4">
+                    <h3>聊天记录</h3>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-history">
+                        删除聊天记录
+                    </button>
+                    <p>&nbsp;</p>
+                    <div id="delete-success" class="alert alert-success" role="alert" style="display: none;">
+                          删除成功
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <form id="changepsw-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="signup-name">请输入旧密码</label>
+                            <input type="password" class="form-control" name="old_psw" id="old-psw" placeholder="请输入旧密码">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-psw1">请输入新密码</label>
+                            <input type="password" class="form-control" name="new_psw" id="new-psw1"
+                                   placeholder="请输入密码">
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-psw2">请再次输入新密码</label>
+                            <input type="password" class="form-control" id="new-psw2"
+                                   placeholder="请再次输入密码">
+                        </div>
+                        <div id="success" class="alert alert-success" role="alert" style="display: none;">
+                            修改密码成功
+                        </div>
+                        <div id="fail" class="alert alert-danger" role="alert" style="display: none;">
+                            A simple success alert—check it out!
+                        </div>
+                        <div id="changepsw-captcha"></div>
+                        <p>&nbsp;</p>
+                        <button type="button" class="btn btn-primary" onclick="changePsw()">修改密码</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="r"></div>
+{% endblock %}
