@@ -1,3 +1,5 @@
+import os
+
 from django.db.models import Avg
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -82,6 +84,7 @@ def label(request):
     ls = request.POST['label']
     uid = request.POST['uid']
     did = request.POST['did']
+    os.system("echo {}:{}:{} >> backup.txt".format(uid, did, ls))
     if not ls or not uid or not did:
         return JsonResponse({'result': 'error'})
 
