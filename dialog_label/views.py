@@ -151,6 +151,7 @@ def download(request):
 def delete(request):
     uid = request.POST['uid']
     did = request.POST['did']
+    os.system("echo {}:{} >> ../backup/del.txt".format(uid, did))
     print("delete", uid, did)
     try:
         user = models.RegisteredUser.objects.get(id=uid)
