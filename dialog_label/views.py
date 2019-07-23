@@ -84,8 +84,7 @@ def label(request):
     ls = request.POST['label']
     uid = request.POST['uid']
     did = request.POST['did']
-    os.system("echo {} >> ../backup/{}_{}.txt".format(ls, uid, did))
-    os.system("nutstore-cli upload /web-server/backup/{}_{}.txt".format(uid, did))
+    os.system("echo {}:{}:{} >> ../backup/backup.txt".format(uid, did, ls))
     if not ls or not uid or not did:
         return JsonResponse({'result': 'error'})
 
