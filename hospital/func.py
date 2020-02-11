@@ -252,7 +252,7 @@ def get_doctor_history(did):
     try:
         doctor = Doctor.objects.get(did=did)
         histories = Accept.objects.filter(doctor=doctor)
-        return JsonResponse({"histories": [x.history.json() for x in histories]})
+        return JsonResponse({"histories": [dict(x.history.json(), **{'state': x.finish}) for x in histories]})
     except Doctor.DoesNotExist:
         return err("invalid doctor id")
 
