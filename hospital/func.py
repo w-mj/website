@@ -9,6 +9,11 @@ from django.views.decorators.csrf import csrf_exempt
 from .form import photoForm
 from .models import *
 
+
+def err(x):
+    return JsonResponse({"error": "{}".format(x)})
+
+
 @csrf_exempt
 def picture(request):
     if request.method == 'POST':
@@ -21,7 +26,7 @@ def picture(request):
             pic.save()
             return JsonResponse({'img': pic.id})
         else:
-            return JsonResponse({'error': "upload image fail."})
+            return err("upload image fail.")
     elif request.method == 'GET':
         if not request.GET.get('img'):
             return render(request, "hospital/index.html")
@@ -36,11 +41,11 @@ def uploadill(request):
     try:
         post_data = json.loads(request.body.decode('utf-8'))
     except Exception:
-        return JsonResponse({"error", "json data error."})
+        return err("json data error.")
     must_contains = ['name', 'age', 'gender', 'ill', 'info', 'wechat']
     for x in must_contains:
         if x not in post_data:
-            return JsonResponse({"error": "no {}".format(x)})
+            return err("no {}".format(x))
     wechat = User.objects.get(openid=post_data['wechat'])
     try:
         patient = Patient.objects.get(wechat=wechat)
@@ -79,20 +84,54 @@ def uploadill(request):
 
     return JsonResponse({'success': True})
 
-
+@csrf_exempt
 def checkcode(request):
     try:
         post_data = json.loads(request.body.decode('utf-8'))
     except Exception:
-        return JsonResponse({"error", "json data error."})
+        return err("json data error.")
     if 'code' not in post_data:
-        return JsonResponse({"error", "no code."})
+        return err("no code.")
     code = post_data['code']
     try:
         doctor = Doctor.objects.get(code=code)
     except Doctor.DoesNotExist:
-        return JsonResponse({"error": "invalid code"})
+        return err("invalid code")
     token = str(uuid.uuid4())
     doctor.token = token
     doctor.save()
     return JsonResponse({"code": code, "token": token})
+
+@csrf_exempt
+def doctor_signup(request):
+    try:
+        post_data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return err("json data error.")
+    if 'did' not in post_data:
+        return err("no doctor id")
+    if 'token' not in post_data:
+        return err("no token")
+    try:
+        doctor = Doctor.objects.get(did=post_data['did'])
+    except Doctor.DoesNotExist:
+        return err("invalid doctor id")
+    if doctor.token != post_data['token']:
+        return err("invalid token or doctor id")
+    if 'wechat' not in post_data:
+        return err("no wechat")
+    try:
+        wechat = User.objects.get(openid=post_data['wechat'])
+        wechat.role = 1
+    except User.DoesNotExist:
+        return err("invalid wechat openid")
+    doctor.wechat = wechat
+    wechat.save()
+    must_contains = ['name', 'gender', 'rank']
+    for x in must_contains:
+        if x not in post_data:
+            return err("no {}".format(x))
+        setattr(doctor, x, post_data[x])
+    doctor.save()
+    return JsonResponse({"success": True})
+

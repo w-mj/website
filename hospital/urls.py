@@ -7,4 +7,5 @@ urlpatterns = [
     path('picture', func.picture),
     path('ill', func.uploadill),
     path('checkcode', func.checkcode),
+    path('doctorsignup', func.doctor_signup)
 ]
