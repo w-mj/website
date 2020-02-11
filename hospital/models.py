@@ -25,7 +25,7 @@ class User(models.Model):
 class Doctor(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
-    did = models.TextField(unique=True, db_index=True)
+    did = models.CharField(max_length=64, unique=True, db_index=True)
     name = models.TextField(null=True, blank=True)
     gender = models.IntegerField(default=0)  # 1: male, 2: female
     rank = models.IntegerField(default=1)
@@ -50,7 +50,7 @@ class Doctor(models.Model):
 class Patient(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
-    pid = models.TextField(unique=True, db_index=True)
+    pid = models.CharField(max_length=64, unique=True, db_index=True)
     name = models.TextField()
     age = models.IntegerField()
     gender = models.IntegerField()  # 1: male, 2: female
