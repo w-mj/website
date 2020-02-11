@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'chatbot',
     'schedule',
-    'dialog_label'
+    'dialog_label',
+    'hospital'
 ]
 
 MIDDLEWARE = [

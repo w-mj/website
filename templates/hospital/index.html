@@ -6,5 +6,18 @@
 </head>
 <body>
 <h1>在线医疗系统</h1>
+<form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+<fieldset>
+
+<legend>上传文件</legend>
+
+<input type="file" name="img" />
+
+<input type="submit" value="上传"/>
+
+</fieldset>
+
+</form>
 </body>
 </html>

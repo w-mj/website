@@ -1,5 +1,4 @@
 .idea
-media/
 static/*
 website/secrets.py
 upload_secrets.sh
