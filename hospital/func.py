@@ -237,3 +237,29 @@ def rank_up_history(request):
     except Doctor.DoesNotExist:
         return err("invalid doctor id")
     return JsonResponse({"success": True})
+
+
+def get_patient_history(pid):
+    try:
+        patient = Patient.objects.get(pid=pid)
+        histories = History.objects.filter(patient=patient)
+        return JsonResponse({"histories": [x.json() for x in histories]})
+    except Patient.DoesNotExist:
+        return err("invalid patient id")
+
+
+def get_doctor_history(did):
+    try:
+        doctor = Doctor.objects.get(did=did)
+        histories = Accept.objects.filter(doctor=doctor)
+        return JsonResponse({"histories": [x.history.json() for x in histories]})
+    except Doctor.DoesNotExist:
+        return err("invalid doctor id")
+
+
+def history(request):
+    if request.GET.get('pid', None):
+        return get_patient_history(request.GET['pid'])
+    if request.GET.get('did', None):
+        return get_doctor_history(request.GET['did'])
+    return err("no patient id or doctor id")
