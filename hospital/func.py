@@ -68,7 +68,7 @@ def uploadill(request):
     history.doctor = None
     history.diag_time = None
     history.send_time = datetime.now()
-    history.rank = 0
+    history.rank = 1
     history.save()
 
     if 'pics' in post_data:
@@ -135,3 +135,18 @@ def doctor_signup(request):
     doctor.save()
     return JsonResponse({"success": True})
 
+
+def get_patients(request):
+    if 'did' not in request.GET:
+        return err("no doctor id")
+    did = request.GET['did']
+    if did == 'all':
+        patients = History.objects.all()
+    else:
+        try:
+            doctor = Doctor.objects.get(did=did)
+        except Doctor.DoesNotExist:
+            return err("invalid doctor id")
+        rank = doctor.rank
+        patients = History.objects.filter(rank=rank, doctor=None)
+    return JsonResponse({"patients": [x.json() for x in patients]})

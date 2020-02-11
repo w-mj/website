@@ -1,4 +1,6 @@
 import uuid as uuid
+from datetime import datetime, timedelta
+
 from django.db import models
 
 # Create your models here.
@@ -95,14 +97,19 @@ class History(models.Model):
     rank = models.IntegerField()
 
     def json(self):
+        st = self.send_time
+        st += timedelta(hours=+8)
+        dt = self.diag_time
+        if dt is not None:
+            dt += timedelta(hours=+8)
         d = {
             'id': self.id,
             'ill': self.ill,
             'info': self.info,
             'doctor': None if self.doctor is None else self.doctor.json(),
             'patient': self.patient.json(),
-            'send_time': str(self.send_time.time()),
-            'diag_time': str(self.diag_time.time()),
+            'send_time': st.strftime("%Y-%m-%d %H:%M:%S"),
+            'diag_time': None if self.diag_time is None else dt.strftime("%Y-%m-%d %H:%M:%S"),
             'rank': self.rank
         }
         return d
