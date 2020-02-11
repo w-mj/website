@@ -263,3 +263,23 @@ def history(request):
     if request.GET.get('did', None):
         return get_doctor_history(request.GET['did'])
     return err("no patient id or doctor id")
+
+
+@csrf_exempt
+def add_doctor(request):
+    try:
+        post_data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return err("json data error.")
+    if 'did' not in post_data:
+        return err("no doctor id")
+    if 'code' not in post_data:
+        return err("no code")
+
+    fields = ['name', 'gender', 'rank', 'code', 'did']
+    doctor = Doctor()
+    for x in fields:
+        if x in post_data:
+            setattr(doctor, x, post_data[x])
+    doctor.save()
+    return JsonResponse({"success": True})
