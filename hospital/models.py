@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 from django.db import models
 
+
 # Create your models here.
 # 患者表
 # 主键id，uuid，患者编号，患者姓名，年龄，患病信息，微信号，患者状态，所在地区，图片
@@ -20,6 +21,9 @@ from django.db import models
 class User(models.Model):
     openid = models.CharField(primary_key=True, max_length=32)
     role = models.IntegerField(default=0)  # 1 是医生，2是患者
+
+    def __str__(self):
+        return str(self.openid)
 
 
 class Doctor(models.Model):
@@ -46,6 +50,9 @@ class Doctor(models.Model):
         }
         return d
 
+    def __str__(self):
+        return str(self.name)
+
 
 class Patient(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
@@ -70,6 +77,9 @@ class Patient(models.Model):
             'phone': self.phone
         }
         return d
+
+    def __str__(self):
+        return str(self.name)
 
 
 class Pictures(models.Model):
@@ -113,6 +123,9 @@ class History(models.Model):
             'rank': self.rank
         }
         return d
+
+    def __str(self):
+        return "{}: {}".format(self.patient.name, self.ill)
 
 
 class PictureTable(models.Model):
