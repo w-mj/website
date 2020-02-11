@@ -125,3 +125,9 @@ class Accept(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
     history = models.ForeignKey(History, on_delete=models.SET_NULL, null=True)
     finish = models.BooleanField()
+
+
+class RankUPHistory(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
+    history = models.ForeignKey(History, on_delete=models.SET_NULL, null=True)
+    time = models.DateTimeField(auto_now=True)

@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from time import time
 
 from django.http import HttpResponseNotFound, HttpResponse, JsonResponse
@@ -164,6 +164,8 @@ def start_diagnosis(request):
     try:
         doctor = Doctor.objects.get(did=post_data['did'])
         history = History.objects.get(id=post_data['hid'])
+        if history.doctor is not None:
+            return err("this diagnosis is already started")
         doctor.credits += 1
         doctor.save()
         accept = Accept()
@@ -171,8 +173,67 @@ def start_diagnosis(request):
         accept.history = history
         accept.finish = False
         accept.save()
+        history.doctor = doctor
+        history.diag_time = datetime.now(tz=timezone.utc)
+        history.save()
     except Doctor.DoesNotExist:
         return err("invalid doctor id")
     except History.DoesNotExist:
         return err("invalid history id")
+    return JsonResponse({"success": True})
+
+
+@csrf_exempt
+def finish_diagnosis(request):
+    try:
+        post_data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return err("json data error.")
+    if 'hid' not in post_data:
+        return err("no history id")
+    if 'did' not in post_data:
+        return err("no doctor id")
+    try:
+        doctor = Doctor.objects.get(did=post_data['did'])
+        history = History.objects.get(id=post_data['hid'])
+        accept = Accept.objects.get(doctor=doctor, history=history)
+        if accept.finish:
+            return err("this diagnosis is already finish")
+        doctor.credits += 2
+        doctor.save()
+        accept.finish = True
+        accept.save()
+    except Doctor.DoesNotExist:
+        return err("invalid doctor id")
+    except History.DoesNotExist:
+        return err("invalid history id")
+    except Accept.DoesNotExist:
+        return err("the diagnosis isn't start")
+    return JsonResponse({"success": True})
+
+
+@csrf_exempt
+def rank_up_history(request):
+    try:
+        post_data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return err("json data error.")
+    if 'hid' not in post_data:
+        return err("no history id")
+    if 'did' not in post_data:
+        return err("no doctor id")
+    try:
+        history = History.objects.get(id=post_data['hid'])
+        doctor = Doctor.objects.get(did=post_data['did'])
+        if history.rank < 3:
+            history.rank += 1
+        history.save()
+        record = RankUPHistory()
+        record.doctor = doctor
+        record.history = history
+        record.save()
+    except History.DoesNotExist:
+        return err("invalid history id")
+    except Doctor.DoesNotExist:
+        return err("invalid doctor id")
     return JsonResponse({"success": True})

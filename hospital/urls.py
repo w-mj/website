@@ -9,5 +9,7 @@ urlpatterns = [
     path('checkcode', func.checkcode),
     path('doctorsignup', func.doctor_signup),
     path('getpatients', func.get_patients),
-    path('startdiagnosis', func.start_diagnosis)
+    path('startdiagnosis', func.start_diagnosis),
+    path('finishdiagnosis', func.finish_diagnosis),
+    path('rankuphistory', func.rank_up_history)
 ]
