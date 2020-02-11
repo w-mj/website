@@ -24,11 +24,13 @@ class Doctor(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
     did = models.TextField(unique=True, db_index=True)
-    name = models.TextField()
+    name = models.TextField(null=True, blank=True)
     gender = models.IntegerField(default=0)  # 1: male, 2: female
     rank = models.IntegerField(default=1)
     credits = models.IntegerField(default=0)
-    wechat = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    wechat = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    code = models.TextField(default="code")
+    token = models.TextField(null=True, blank=True)
 
     def json(self):
         d = {

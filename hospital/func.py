@@ -33,7 +33,10 @@ def picture(request):
 
 @csrf_exempt
 def uploadill(request):
-    post_data = json.loads(request.body.decode('utf-8'))
+    try:
+        post_data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return JsonResponse({"error", "json data error."})
     must_contains = ['name', 'age', 'gender', 'ill', 'info', 'wechat']
     for x in must_contains:
         if x not in post_data:
@@ -77,3 +80,19 @@ def uploadill(request):
     return JsonResponse({'success': True})
 
 
+def checkcode(request):
+    try:
+        post_data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return JsonResponse({"error", "json data error."})
+    if 'code' not in post_data:
+        return JsonResponse({"error", "no code."})
+    code = post_data['code']
+    try:
+        doctor = Doctor.objects.get(code=code)
+    except Doctor.DoesNotExist:
+        return JsonResponse({"error": "invalid code"})
+    token = str(uuid.uuid4())
+    doctor.token = token
+    doctor.save()
+    return JsonResponse({"code": code, "token": token})
