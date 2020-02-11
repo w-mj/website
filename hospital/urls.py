@@ -4,5 +4,6 @@ from hospital import views, func
 
 urlpatterns = [
     path('index', views.index),
-    path('picture', func.picture)
+    path('picture', func.picture),
+    path('ill', func.uploadill)
 ]

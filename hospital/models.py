@@ -1,3 +1,4 @@
+import uuid as uuid
 from django.db import models
 
 # Create your models here.
@@ -20,16 +21,16 @@ class User(models.Model):
 
 
 class Doctor(models.Model):
-    id = models.IntegerField(primary_key=True, auto_created=True)
-    uuid = models.UUIDField()
+    id = models.AutoField(primary_key=True, auto_created=True)
+    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
     did = models.TextField(unique=True, db_index=True)
     name = models.TextField()
     gender = models.IntegerField(default=0)  # 1: male, 2: female
     rank = models.IntegerField(default=1)
     credits = models.IntegerField(default=0)
-    wechat = models.ForeignKey(User, on_delete='SET_NULL')
+    wechat = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
-    def info(self):
+    def json(self):
         d = {
             'id': self.id,
             'uuid': self.uuid,
@@ -43,17 +44,17 @@ class Doctor(models.Model):
 
 
 class Patient(models.Model):
-    id = models.IntegerField(primary_key=True, auto_created=True)
-    uuid = models.UUIDField()
+    id = models.AutoField(primary_key=True, auto_created=True)
+    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
     pid = models.TextField(unique=True, db_index=True)
     name = models.TextField()
     age = models.IntegerField()
     gender = models.IntegerField()  # 1: male, 2: female
-    wechat = models.ForeignKey(User, on_delete='SET_NULL')
+    wechat = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     location = models.TextField()
     phone = models.TextField(blank=True, null=True)
 
-    def info(self):
+    def json(self):
         d = {
             'id': self.id,
             'uuid': self.uuid,
@@ -73,8 +74,8 @@ class Pictures(models.Model):
 
 
 class Message(models.Model):
-    id = models.IntegerField(primary_key=True, auto_created=True)
-    uuid = models.UUIDField()
+    id = models.AutoField(primary_key=True, auto_created=True)
+    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
     time = models.DateTimeField()
     sender = models.TextField(db_index=True)
     receiver = models.TextField(db_index=True)
@@ -82,22 +83,22 @@ class Message(models.Model):
 
 
 class History(models.Model):
-    id = models.IntegerField(primary_key=True, auto_created=True)
-    patient = models.ForeignKey(Patient, on_delete='SET_NULL')
+    id = models.AutoField(primary_key=True, auto_created=True)
+    patient = models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True)
     ill = models.TextField()
-    state = models.TextField()
-    doctor = models.ForeignKey(to=Doctor, on_delete='SET_NULL', null=True)
-    diag_time = models.DateTimeField()
+    info = models.TextField()
+    doctor = models.ForeignKey(to=Doctor, on_delete=models.SET_NULL, null=True)
+    diag_time = models.DateTimeField(null=True)
     send_time = models.DateTimeField()
     rank = models.IntegerField()
 
-    def info(self):
+    def json(self):
         d = {
             'id': self.id,
             'ill': self.ill,
-            'state': self.state,
-            'doctor': self.doctor.info(),
-            'patient': self.patient.info(),
+            'info': self.info,
+            'doctor': None if self.doctor is None else self.doctor.json(),
+            'patient': self.patient.json(),
             'send_time': str(self.send_time.time()),
             'diag_time': str(self.diag_time.time()),
             'rank': self.rank
@@ -106,5 +107,5 @@ class History(models.Model):
 
 
 class PictureTable(models.Model):
-    pic = models.ForeignKey(Pictures, on_delete='SET_NULL')
-    patient = models.ForeignKey(History, on_delete='SET_NULL')
+    pic = models.ForeignKey(Pictures, on_delete=models.SET_NULL, null=True)
+    history = models.ForeignKey(History, on_delete=models.SET_NULL, null=True)

@@ -1,3 +1,5 @@
+import json
+from datetime import datetime
 from time import time
 
 from django.http import HttpResponseNotFound, HttpResponse, JsonResponse
@@ -28,3 +30,50 @@ def picture(request):
         except Pictures.DoesNotExist:
             return HttpResponseNotFound()
         return HttpResponse(img.pic, content_type='image/png')
+
+@csrf_exempt
+def uploadill(request):
+    post_data = json.loads(request.body.decode('utf-8'))
+    must_contains = ['name', 'age', 'gender', 'ill', 'info', 'wechat']
+    for x in must_contains:
+        if x not in post_data:
+            return JsonResponse({"error": "no {}".format(x)})
+    wechat = User.objects.get(openid=post_data['wechat'])
+    try:
+        patient = Patient.objects.get(wechat=wechat)
+    except Patient.DoesNotExist:
+        patient = Patient()
+        patient.wechat = wechat
+        wechat.role = 2
+        wechat.save()
+
+    patient_fields = patient.json().keys()
+    for x in patient_fields:
+        if x in post_data and post_data[x] != getattr(patient, x):
+            setattr(patient, x, post_data[x])
+    patient.save()
+
+    history = History()
+    history.patient = patient
+    history.ill = post_data['ill']
+    history.info = post_data['info']
+    history.doctor = None
+    history.diag_time = None
+    history.send_time = datetime.now()
+    history.rank = 0
+    history.save()
+
+    if 'pics' in post_data:
+        for pic in post_data['pics']:
+            try:
+                p = Pictures.objects.get(id=pic)
+            except Pictures.DoesNotExist:
+                return JsonResponse({'error': 'picture id {} does not exist.'.format(pic)})
+            pt = PictureTable()
+            pt.pic = p
+            pt.history = history
+            pt.save()
+
+    return JsonResponse({'success': True})
+
+
