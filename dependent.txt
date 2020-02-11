@@ -1,0 +1,7 @@
+pip install mysqlclient
+pip install geetest
+pip install requests
+pip install bs4
+pip install icalendar
+pip install django==2.1.4
+python -m pip install Pillow

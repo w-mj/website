@@ -27,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = secrets.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = socket.gethostname() == 'DESKTOP-0D3RQ6Q'
+DEBUG = socket.gethostname() != 'VM-125-218-ubuntu'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'fun.alphamj.cn', '123.206.57.166', 'chatbot.alphamj.cn']
 
@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'website.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-if socket.gethostname() == 'DESKTOP-0D3RQ6Q':
+if socket.gethostname() != 'VM-125-218-ubuntu':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

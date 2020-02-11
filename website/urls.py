@@ -22,6 +22,7 @@ import chatbot.auth
 import chatbot.func
 import dialog_label.urls
 import schedule.urls
+import hospital.urls
 from website import settings
 from .deploy import deploy
 from .captcha import pc_getcaptcha, pc_validate
@@ -55,7 +56,9 @@ urlpatterns = [
     path('schedule/', include(schedule.urls)),
     path('label/', include(dialog_label.urls)),
 
-    path('a/', a)
+    path('a/', a),
+
+    path('hospital/', include(hospital.urls))
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
