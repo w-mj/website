@@ -118,3 +118,10 @@ class History(models.Model):
 class PictureTable(models.Model):
     pic = models.ForeignKey(Pictures, on_delete=models.SET_NULL, null=True)
     history = models.ForeignKey(History, on_delete=models.SET_NULL, null=True)
+
+
+class Accept(models.Model):
+    # 接诊表
+    doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
+    history = models.ForeignKey(History, on_delete=models.SET_NULL, null=True)
+    finish = models.BooleanField()

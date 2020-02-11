@@ -8,5 +8,6 @@ urlpatterns = [
     path('ill', func.uploadill),
     path('checkcode', func.checkcode),
     path('doctorsignup', func.doctor_signup),
-    path('getpatients', func.get_patients)
+    path('getpatients', func.get_patients),
+    path('startdiagnosis', func.start_diagnosis)
 ]

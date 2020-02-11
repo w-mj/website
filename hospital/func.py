@@ -150,3 +150,29 @@ def get_patients(request):
         rank = doctor.rank
         patients = History.objects.filter(rank=rank, doctor=None)
     return JsonResponse({"patients": [x.json() for x in patients]})
+
+@csrf_exempt
+def start_diagnosis(request):
+    try:
+        post_data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return err("json data error.")
+    if 'hid' not in post_data:
+        return err("no history id")
+    if 'did' not in post_data:
+        return err("no doctor id")
+    try:
+        doctor = Doctor.objects.get(did=post_data['did'])
+        history = History.objects.get(id=post_data['hid'])
+        doctor.credits += 1
+        doctor.save()
+        accept = Accept()
+        accept.doctor = doctor
+        accept.history = history
+        accept.finish = False
+        accept.save()
+    except Doctor.DoesNotExist:
+        return err("invalid doctor id")
+    except History.DoesNotExist:
+        return err("invalid history id")
+    return JsonResponse({"success": True})

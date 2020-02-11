@@ -9,6 +9,7 @@ admin.site.register(Pictures)
 admin.site.register(Message)
 admin.site.register(History)
 admin.site.register(PictureTable)
+admin.site.register(Accept)
 
 
 # Register your models here.
