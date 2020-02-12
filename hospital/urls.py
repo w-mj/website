@@ -14,5 +14,5 @@ urlpatterns = [
     path('rankuphistory', func.rank_up_history),
     path('history', func.history),
     path('adddoctor', func.add_doctor),
-
+    path('statistic', func.statistic)
 ]

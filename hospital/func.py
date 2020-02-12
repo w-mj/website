@@ -1,7 +1,9 @@
 import json
 from datetime import datetime, timezone
 from time import time
+from collections import Counter
 
+from django.db.models import Count
 from django.http import HttpResponseNotFound, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -283,3 +285,37 @@ def add_doctor(request):
             setattr(doctor, x, post_data[x])
     doctor.save()
     return JsonResponse({"success": True})
+
+
+def statistic(request):
+    if 'did' not in request.GET:
+        return err("no doctor id")
+    try:
+        me = Doctor.objects.get(did=request.GET['did'])
+    except Doctor.DoesNotExist:
+        return err("invalid doctor id")
+    myacc = Accept.objects.filter(doctor=me)
+    mycured = myacc.count()
+    dates = [x.history.diag_time for x in myacc]
+    dates = [x.strftime("%Y-%m-%d") for x in dates]
+    count = Counter(dates)
+    if len(count) == 0:
+        timedata = []
+        dailycured = []
+    else:
+        (timedata, dailycured) = zip(*dict(count).items())
+
+    doccured = Accept.objects.values("doctor").annotate(dcount=Count("doctor"))
+    doccured = {x['doctor']: x['dcount'] for x in doccured}
+    dname = Doctor.objects.values_list("id", "name")
+    doccured = {x[1]: doccured.get(x[0], 0) for x in dname}
+    doccured = doccured.items()
+    doccured = sorted(doccured, key=lambda x: x[1], reverse=True)
+    (docname, totalcured) = zip(*doccured)
+    myseat = doccured.index((me.name, mycured)) + 1
+    print(doccured)
+    return JsonResponse(
+        {"timedata": timedata, "dailycured": dailycured,
+         "docname": docname, "totalcured": totalcured,
+         "mycured": mycured, "myseat": myseat, "myscore": me.credits
+         })
