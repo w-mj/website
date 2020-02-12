@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from hospital.models import User, Doctor, Patient
-
+from website.secrets import xcx_appid, xcx_xcxsecret
 
 @require_POST
 @csrf_exempt
@@ -21,7 +21,7 @@ def login(request):
         return HttpResponse('{"result":"error", "msg":"no code"}')
     response = requests.get('https://api.weixin.qq.com/sns/jscode2session?'
                             'appid={}&secret={}&js_code={}&grant_type=authorization_code'
-                            .format(xcx_appid, xcx_appsecret, code))
+                            .format(xcx_appid, xcx_xcxsecret, code))
     decode = json.loads(response.content.decode())
     openid = decode.get('openid', '')
 

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from hospital import views, func
+from hospital import views, func, xcx
 
 urlpatterns = [
     path('index', views.index),
@@ -14,5 +14,6 @@ urlpatterns = [
     path('rankuphistory', func.rank_up_history),
     path('history', func.history),
     path('adddoctor', func.add_doctor),
-    path('statistic', func.statistic)
+    path('statistic', func.statistic),
+    path('login', xcx.login)
 ]
