@@ -3,13 +3,11 @@ from .models import *
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('openid', 'role',)
+    list_display = ('openid', 'role', 'name', 'gender', 'age', 'location', 'phone')
 
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ('did', 'name', 'gender', 'rank', 'credits')
+    list_display = ('did', 'wechat', 'credits', 'rank', 'code')
 
-class PatientAdmin(admin.ModelAdmin):
-    list_display = ('pid', 'name', 'age', 'gender', 'location')
 
 class HistoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'patient', 'ill', 'info', 'doctor', 'diag_time', 'send_time', 'rank')
@@ -23,7 +21,6 @@ class RankUpHistoryAdmin(admin.ModelAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Doctor, DoctorAdmin)
-admin.site.register(Patient, PatientAdmin)
 admin.site.register(Pictures)
 admin.site.register(Message)
 admin.site.register(History, HistoryAdmin)

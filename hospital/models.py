@@ -4,34 +4,34 @@ from datetime import datetime, timedelta
 from django.db import models
 
 
-# Create your models here.
-# 患者表
-# 主键id，uuid，患者编号，患者姓名，年龄，患病信息，微信号，患者状态，所在地区，图片
-#
-# 医生表
-# 主键id，uuid，医生编号，医生姓名，性别，微信号，医生级别，积分
-#
-# 消息表
-# 主键id，uuid，消息发送时间，发送人，接受人，消息信息
-#
-# 病史表
-# 主键id，uuid，患者编号，患者情况，诊断建议，诊断医生，诊断时间
-
-
 class User(models.Model):
     openid = models.CharField(primary_key=True, max_length=32)
-    role = models.IntegerField(default=0)  # 1 是医生，2是患者
+    role = models.IntegerField(default=2)  # 1 是医生，2是患者
+    name = models.TextField(default="未填写")
+    gender = models.IntegerField(default=0)  # 1: male, 2: female
+    age = models.IntegerField(default=0)
+    location = models.TextField(default="未填写")
+    phone = models.TextField(default="未填写")
+
+    def json(self):
+        d = {
+            'openid': self.openid,
+            'name': self.name,
+            'gender': self.gender,
+            'age': self.age,
+            'location': self.location,
+            'phone': self.phone
+        }
+        return d
 
     def __str__(self):
-        return str(self.openid)
+        return str(self.name) + ("医生" if self.role == 1 else "患者")
 
 
 class Doctor(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
     did = models.CharField(max_length=64, unique=True, db_index=True)
-    name = models.TextField(null=True, blank=True)
-    gender = models.IntegerField(default=0)  # 1: male, 2: female
     rank = models.IntegerField(default=1)
     credits = models.IntegerField(default=0)
     wechat = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -40,46 +40,15 @@ class Doctor(models.Model):
 
     def json(self):
         d = {
-            'id': self.id,
-            'uuid': self.uuid,
             'did': self.did,
-            'name': self.name,
-            'gender': self.gender,
             'rank': self.rank,
             'credits': self.credits
         }
+        d.update(self.wechat.json())
         return d
 
     def __str__(self):
-        return str(self.name)
-
-
-class Patient(models.Model):
-    id = models.AutoField(primary_key=True, auto_created=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
-    pid = models.CharField(max_length=64, unique=True, db_index=True)
-    name = models.TextField()
-    age = models.IntegerField()
-    gender = models.IntegerField()  # 1: male, 2: female
-    wechat = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    location = models.TextField()
-    phone = models.TextField(blank=True, null=True)
-
-    def json(self):
-        d = {
-            'id': self.id,
-            'uuid': self.uuid,
-            'pid': self.pid,
-            'name': self.name,
-            'age': self.age,
-            'gender': self.gender,
-            'location': self.location,
-            'phone': self.phone
-        }
-        return d
-
-    def __str__(self):
-        return str(self.name)
+        return str("del" if self.wechat is None else self.wechat.name)
 
 
 class Pictures(models.Model):
@@ -98,7 +67,7 @@ class Message(models.Model):
 
 class History(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
-    patient = models.ForeignKey(Patient, on_delete=models.SET_NULL, null=True)
+    patient = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     ill = models.TextField()
     info = models.TextField()
     doctor = models.ForeignKey(to=Doctor, on_delete=models.SET_NULL, null=True)
@@ -124,7 +93,7 @@ class History(models.Model):
         }
         return d
 
-    def __str(self):
+    def __str__(self):
         return "{}: {}".format(self.patient.name, self.ill)
 
 

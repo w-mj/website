@@ -44,34 +44,24 @@ def uploadill(request):
         post_data = json.loads(request.body.decode('utf-8'))
     except Exception:
         return err("json data error.")
-    must_contains = ['name', 'age', 'gender', 'ill', 'info', 'wechat']
+    must_contains = ['ill', 'info', 'wechat']
     for x in must_contains:
         if x not in post_data:
             return err("no {}".format(x))
-    wechat = User.objects.get(openid=post_data['wechat'])
     try:
-        patient = Patient.objects.get(wechat=wechat)
-    except Patient.DoesNotExist:
-        patient = Patient()
-        patient.wechat = wechat
-        wechat.role = 2
-        wechat.save()
+        patient = User.objects.get(openid=post_data['wechat'])
+    except User.DoesNotExist:
+        return err("invalid wechat openid")
 
-    patient_fields = patient.json().keys()
-    for x in patient_fields:
-        if x in post_data and post_data[x] != getattr(patient, x):
-            setattr(patient, x, post_data[x])
-    patient.save()
-
-    history = History()
-    history.patient = patient
-    history.ill = post_data['ill']
-    history.info = post_data['info']
-    history.doctor = None
-    history.diag_time = None
-    history.send_time = datetime.now()
-    history.rank = 1
-    history.save()
+    his = History()
+    his.patient = patient
+    his.ill = post_data['ill']
+    his.info = post_data['info']
+    his.doctor = None
+    his.diag_time = None
+    his.send_time = datetime.now(tz=timezone.utc)
+    his.rank = 1
+    his.save()
 
     if 'pics' in post_data:
         for pic in post_data['pics']:
@@ -81,10 +71,11 @@ def uploadill(request):
                 return JsonResponse({'error': 'picture id {} does not exist.'.format(pic)})
             pt = PictureTable()
             pt.pic = p
-            pt.history = history
+            pt.history = his
             pt.save()
 
     return JsonResponse({'success': True})
+
 
 @csrf_exempt
 def checkcode(request):
@@ -94,15 +85,23 @@ def checkcode(request):
         return err("json data error.")
     if 'code' not in post_data:
         return err("no code.")
+    if 'wechat' not in post_data:
+        return err("no wechat")
     code = post_data['code']
     try:
         doctor = Doctor.objects.get(code=code)
+        user = User.objects.get(openid=post_data['wechat'])
+        user.role = 1
+        user.save()
+        doctor.wechat = user
+        doctor.save()
     except Doctor.DoesNotExist:
         return err("invalid code")
-    token = str(uuid.uuid4())
-    doctor.token = token
-    doctor.save()
-    return JsonResponse({"code": code, "token": token})
+    except User.DoesNotExist:
+        return err("invalid wechat")
+
+    return JsonResponse({"success": True})
+
 
 @csrf_exempt
 def doctor_signup(request):
@@ -110,31 +109,19 @@ def doctor_signup(request):
         post_data = json.loads(request.body.decode('utf-8'))
     except Exception:
         return err("json data error.")
-    if 'did' not in post_data:
-        return err("no doctor id")
-    if 'token' not in post_data:
-        return err("no token")
-    try:
-        doctor = Doctor.objects.get(did=post_data['did'])
-    except Doctor.DoesNotExist:
-        return err("invalid doctor id")
-    if doctor.token != post_data['token']:
-        return err("invalid token or doctor id")
     if 'wechat' not in post_data:
         return err("no wechat")
+
     try:
-        wechat = User.objects.get(openid=post_data['wechat'])
-        wechat.role = 1
+        user = User.objects.get(openid=post_data['wechat'])
+        fields = ['name', 'gender', 'age', 'location', 'phone']
+        for x in fields:
+            if x in post_data:
+                setattr(user, x, post_data[x])
+        user.save()
     except User.DoesNotExist:
-        return err("invalid wechat openid")
-    doctor.wechat = wechat
-    wechat.save()
-    must_contains = ['name', 'gender', 'rank']
-    for x in must_contains:
-        if x not in post_data:
-            return err("no {}".format(x))
-        setattr(doctor, x, post_data[x])
-    doctor.save()
+        return err("invalid wechat")
+
     return JsonResponse({"success": True})
 
 
@@ -146,12 +133,17 @@ def get_patients(request):
         patients = History.objects.all()
     else:
         try:
-            doctor = Doctor.objects.get(did=did)
+            user = User.objects.get(openid=did)
+            doctor = Doctor.objects.get(wechat=user)
+        except User.DoesNotExist:
+            return err("invalid doctor openid")
         except Doctor.DoesNotExist:
-            return err("invalid doctor id")
+            return err("id={} is not a doctor".format(did))
+
         rank = doctor.rank
         patients = History.objects.filter(rank=rank, doctor=None)
     return JsonResponse({"patients": [x.json() for x in patients]})
+
 
 @csrf_exempt
 def start_diagnosis(request):
@@ -164,22 +156,25 @@ def start_diagnosis(request):
     if 'did' not in post_data:
         return err("no doctor id")
     try:
-        doctor = Doctor.objects.get(did=post_data['did'])
-        history = History.objects.get(id=post_data['hid'])
-        if history.doctor is not None:
+        doctor_user = User.objects.get(openid=post_data['did'])
+        doctor = Doctor.objects.get(wechat=doctor_user)
+        his = History.objects.get(id=post_data['hid'])
+        if his.doctor is not None:
             return err("this diagnosis is already started")
         doctor.credits += 1
         doctor.save()
         accept = Accept()
         accept.doctor = doctor
-        accept.history = history
+        accept.history = his
         accept.finish = False
         accept.save()
-        history.doctor = doctor
-        history.diag_time = datetime.now(tz=timezone.utc)
-        history.save()
-    except Doctor.DoesNotExist:
+        his.doctor = doctor
+        his.diag_time = datetime.now(tz=timezone.utc)
+        his.save()
+    except User.DoesNotExist:
         return err("invalid doctor id")
+    except Doctor.DoesNotExist:
+        return err("{} is not a doctor".format(post_data['did']))
     except History.DoesNotExist:
         return err("invalid history id")
     return JsonResponse({"success": True})
@@ -196,7 +191,8 @@ def finish_diagnosis(request):
     if 'did' not in post_data:
         return err("no doctor id")
     try:
-        doctor = Doctor.objects.get(did=post_data['did'])
+        doctor_user = User.objects.get(openid=post_data['did'])
+        doctor = Doctor.objects.get(wechat=doctor_user)
         history = History.objects.get(id=post_data['hid'])
         accept = Accept.objects.get(doctor=doctor, history=history)
         if accept.finish:
@@ -205,8 +201,10 @@ def finish_diagnosis(request):
         doctor.save()
         accept.finish = True
         accept.save()
-    except Doctor.DoesNotExist:
+    except User.DoesNotExist:
         return err("invalid doctor id")
+    except Doctor.DoesNotExist:
+        return err("{} is not a doctor".format(post_data['did']))
     except History.DoesNotExist:
         return err("invalid history id")
     except Accept.DoesNotExist:
@@ -226,7 +224,8 @@ def rank_up_history(request):
         return err("no doctor id")
     try:
         history = History.objects.get(id=post_data['hid'])
-        doctor = Doctor.objects.get(did=post_data['did'])
+        doc_user = User.objects.get(openid=post_data['did'])
+        doctor = Doctor.objects.get(wechat=doc_user)
         if history.rank < 3:
             history.rank += 1
         history.save()
@@ -236,26 +235,31 @@ def rank_up_history(request):
         record.save()
     except History.DoesNotExist:
         return err("invalid history id")
-    except Doctor.DoesNotExist:
+    except User.DoesNotExist:
         return err("invalid doctor id")
+    except Doctor.DoesNotExist:
+        return err("{} is not a doctor".format(post_data['did']))
     return JsonResponse({"success": True})
 
 
 def get_patient_history(pid):
     try:
-        patient = Patient.objects.get(pid=pid)
+        patient = User.objects.get(openid=pid)
         histories = History.objects.filter(patient=patient)
         return JsonResponse({"histories": [x.json() for x in histories]})
-    except Patient.DoesNotExist:
+    except User.DoesNotExist:
         return err("invalid patient id")
 
 
 def get_doctor_history(did):
     try:
-        doctor = Doctor.objects.get(did=did)
+        doc_user = User.objects.get(openid=did)
+        doctor = Doctor.objects.get(wechat=doc_user)
         histories = Accept.objects.filter(doctor=doctor)
         return JsonResponse({"histories": [dict(x.history.json(), **{'state': x.finish}) for x in histories]})
     except Doctor.DoesNotExist:
+        return err("{} is not a doctor".format(did))
+    except User.DoesNotExist:
         return err("invalid doctor id")
 
 
@@ -278,7 +282,7 @@ def add_doctor(request):
     if 'code' not in post_data:
         return err("no code")
 
-    fields = ['name', 'gender', 'rank', 'code', 'did']
+    fields = ['rank', 'code', 'did']
     doctor = Doctor()
     for x in fields:
         if x in post_data:
@@ -290,10 +294,14 @@ def add_doctor(request):
 def statistic(request):
     if 'did' not in request.GET:
         return err("no doctor id")
+    did = request.GET['did']
     try:
-        me = Doctor.objects.get(did=request.GET['did'])
-    except Doctor.DoesNotExist:
+        doc_user = User.objects.get(openid=did)
+        me = Doctor.objects.get(wechat=doc_user)
+    except User.DoesNotExist:
         return err("invalid doctor id")
+    except Doctor.DoesNotExist:
+        return err("{} is not a doctor".format(did))
     myacc = Accept.objects.filter(doctor=me)
     mycured = myacc.count()
     dates = [x.history.diag_time for x in myacc]
@@ -307,12 +315,12 @@ def statistic(request):
 
     doccured = Accept.objects.values("doctor").annotate(dcount=Count("doctor"))
     doccured = {x['doctor']: x['dcount'] for x in doccured}
-    dname = Doctor.objects.values_list("id", "name")
+    dname = [(x.id, x.wechat.name) for x in Doctor.objects.all()]
     doccured = {x[1]: doccured.get(x[0], 0) for x in dname}
     doccured = doccured.items()
     doccured = sorted(doccured, key=lambda x: x[1], reverse=True)
     (docname, totalcured) = zip(*doccured)
-    myseat = doccured.index((me.name, mycured)) + 1
+    myseat = doccured.index((me.wechat.name, mycured)) + 1
     print(doccured)
     return JsonResponse(
         {"timedata": timedata, "dailycured": dailycured,
