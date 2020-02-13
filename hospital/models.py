@@ -125,7 +125,7 @@ class Message(models.Model):
         d = {
             'id': self.id,
             'time': st.strftime("%Y-%m-%d %H:%M:%S"),
-            'sender': self.sender.openid,
+            'sender': self.sender.json(),
             'history': self.history.id,
             'text': self.text
         }
