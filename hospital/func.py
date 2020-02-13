@@ -241,12 +241,22 @@ def rank_history(request, inc):
         history = History.objects.get(id=post_data['hid'])
         doc_user = User.objects.get(openid=post_data['did'])
         doctor = Doctor.objects.get(wechat=doc_user)
+        if history.doctor is not None and history.doctor != doctor:
+            return err("this is not your patient")
         if inc == 1 and history.rank == 2:
             return err("rank is already 2")
         if inc == -1 and history.rank == 1:
             return err("rank is already 1")
+
+        if history.doctor is not None:
+            acc = Accept.objects.get(history=history, doctor=doctor)
+            acc.delete()
+
         history.rank += inc
+        history.doctor = None
+        history.diag_time = None
         history.save()
+
         record = RankUPHistory()
         record.doctor = doctor
         record.history = history
