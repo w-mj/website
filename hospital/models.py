@@ -109,6 +109,7 @@ class Accept(models.Model):
 class RankUPHistory(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
     history = models.ForeignKey(History, on_delete=models.SET_NULL, null=True)
+    inc = models.IntegerField()
     time = models.DateTimeField(auto_now=True)
 
 

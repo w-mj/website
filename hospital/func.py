@@ -220,6 +220,15 @@ def finish_diagnosis(request):
 
 @csrf_exempt
 def rank_up_history(request):
+    return rank_history(request, 1)
+
+
+@csrf_exempt
+def rank_down_history(request):
+    return rank_history(request, -1)
+
+
+def rank_history(request, inc):
     try:
         post_data = json.loads(request.body.decode('utf-8'))
     except Exception:
@@ -232,12 +241,16 @@ def rank_up_history(request):
         history = History.objects.get(id=post_data['hid'])
         doc_user = User.objects.get(openid=post_data['did'])
         doctor = Doctor.objects.get(wechat=doc_user)
-        if history.rank < 3:
-            history.rank += 1
+        if inc == 1 and history.rank == 2:
+            return err("rank is already 2")
+        if inc == -1 and history.rank == 1:
+            return err("rank is already 1")
+        history.rank += inc
         history.save()
         record = RankUPHistory()
         record.doctor = doctor
         record.history = history
+        record.inc = inc
         record.save()
     except History.DoesNotExist:
         return err("invalid history id")
