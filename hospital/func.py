@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from time import time
 from collections import Counter
 
+from django.core.paginator import Paginator
 from django.db.models import Count
 from django.http import HttpResponseNotFound, HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -142,6 +143,8 @@ def get_patients(request):
 
         rank = doctor.rank
         patients = History.objects.filter(rank=rank, doctor=None)
+    page = request.GET.get('page', 1)
+    patients = Paginator(patients, 10).page(page)
     return JsonResponse({"patients": [x.json() for x in patients]})
 
 
@@ -242,20 +245,22 @@ def rank_up_history(request):
     return JsonResponse({"success": True})
 
 
-def get_patient_history(pid):
+def get_patient_history(pid, page):
     try:
         patient = User.objects.get(openid=pid)
         histories = History.objects.filter(patient=patient)
+        histories = Paginator(histories, 10).page(page)
         return JsonResponse({"histories": [x.json() for x in histories]})
     except User.DoesNotExist:
         return err("invalid patient id")
 
 
-def get_doctor_history(did):
+def get_doctor_history(did, page):
     try:
         doc_user = User.objects.get(openid=did)
         doctor = Doctor.objects.get(wechat=doc_user)
         histories = Accept.objects.filter(doctor=doctor)
+        histories = Paginator(histories, 10).page(page)
         return JsonResponse({"histories": [dict(x.history.json(), **{'state': x.finish}) for x in histories]})
     except Doctor.DoesNotExist:
         return err("{} is not a doctor".format(did))
@@ -264,10 +269,11 @@ def get_doctor_history(did):
 
 
 def history(request):
+    page = request.GET.get('page', 1)
     if request.GET.get('pid', None):
-        return get_patient_history(request.GET['pid'])
+        return get_patient_history(request.GET['pid'], page)
     if request.GET.get('did', None):
-        return get_doctor_history(request.GET['did'])
+        return get_doctor_history(request.GET['did'], page)
     return err("no patient id or doctor id")
 
 

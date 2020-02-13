@@ -48,5 +48,5 @@ def login(request):
         xcx_user.role = 2  # 默认为患者
         decode.update({"isdoctor": False})
         xcx_user.save()
-
+    decode.update({"token": "123456"})
     return JsonResponse(decode)
