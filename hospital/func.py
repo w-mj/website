@@ -317,7 +317,7 @@ def statistic(request):
         return err("invalid doctor id")
     except Doctor.DoesNotExist:
         return err("{} is not a doctor".format(did))
-    myacc = Accept.objects.filter(doctor=me)
+    myacc = Accept.objects.filter(doctor=me).order_by("-id")
     mycured = myacc.count()
     dates = [x.history.diag_time for x in myacc]
     dates = [x.strftime("%Y-%m-%d") for x in dates]
@@ -327,6 +327,8 @@ def statistic(request):
         dailycured = []
     else:
         (timedata, dailycured) = zip(*dict(count).items())
+    timedata = timedata[0: 7] if len(timedata) > 7 else timedata
+    dailycured = dailycured[0: 7] if len(dailycured) > 7 else dailycured
 
     doccured = Accept.objects.values("doctor").annotate(dcount=Count("doctor"))
     doccured = {x['doctor']: x['dcount'] for x in doccured}
@@ -336,7 +338,6 @@ def statistic(request):
     doccured = sorted(doccured, key=lambda x: x[1], reverse=True)
     (docname, totalcured) = zip(*doccured)
     myseat = doccured.index((me.wechat .name if me.wechat else "医生未填写个人信息", mycured)) + 1
-    print(doccured)
     return JsonResponse(
         {"timedata": timedata, "dailycured": dailycured,
          "docname": docname, "totalcured": totalcured,
