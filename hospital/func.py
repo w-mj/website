@@ -248,42 +248,38 @@ def rank_up_history(request):
     return JsonResponse({"success": True})
 
 
-def get_patient_history(pid, page):
-    try:
-        patient = User.objects.get(openid=pid)
-        histories = History.objects.filter(patient=patient).order_by("-send_time")
-        try:
-            histories = Paginator(histories, 10).page(page)
-        except EmptyPage:
-            histories = []
-        return JsonResponse({"histories": [x.json() for x in histories]})
-    except User.DoesNotExist:
-        return err("invalid patient id")
-
-
-def get_doctor_history(did, page):
-    try:
-        doc_user = User.objects.get(openid=did)
-        doctor = Doctor.objects.get(wechat=doc_user)
-        histories = Accept.objects.filter(doctor=doctor).order_by("-send_time")
-        try:
-            histories = Paginator(histories, 10).page(page)
-        except EmptyPage:
-            histories = []
-        return JsonResponse({"histories": [dict(x.history.json(), **{'state': x.finish}) for x in histories]})
-    except Doctor.DoesNotExist:
-        return err("{} is not a doctor".format(did))
-    except User.DoesNotExist:
-        return err("invalid doctor id")
-
-
 def history(request):
     page = request.GET.get('page', 1)
-    if request.GET.get('pid', None):
-        return get_patient_history(request.GET['pid'], page)
-    if request.GET.get('did', None):
-        return get_doctor_history(request.GET['did'], page)
-    return err("no patient id or doctor id")
+    try:
+        if request.GET.get('pid', None):
+            patient = User.objects.get(openid=request.GET['pid'])
+            histories = History.objects.filter(patient=patient).order_by("-send_time")
+        elif request.GET.get('did', None):
+            doc_user = User.objects.get(openid=request.GET['did'])
+            doctor = Doctor.objects.get(wechat=doc_user)
+            histories = History.objects.filter(doctor=doctor).order_by("-send_time")
+        else:
+            return err("no pid or did")
+    except Doctor.DoesNotExist:
+        return err("{} is not a doctor".format(request.GET['did']))
+    except User.DoesNotExist:
+        return err("invalid doctor/patient id")
+
+    try:
+        histories = Paginator(histories, 10).page(page)
+    except EmptyPage:
+        histories = []
+    dis = []
+    for x in histories:
+        msg = Message.objects.filter(history=x).order_by("-time")
+        if msg.count() == 0:
+            msg = None
+        else:
+            msg = msg[0].json()
+        t = x.json()
+        t.update({'newest_msg': msg})
+        dis.append(t)
+    return JsonResponse({"histories": dis})
 
 
 @csrf_exempt
@@ -416,6 +412,7 @@ def get_all_message(request):
             msgs = Message.objects.filter(history__patient=user).order_by("-time")
         else:
             msgs = Message.objects.filter(history__doctor__wechat_id=uid).order_by("-time")
+
         return JsonResponse({"messages": [x.json() for x in msgs]})
     except User.DoesNotExist:
         return err("invalid wechat")
