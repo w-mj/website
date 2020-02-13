@@ -26,7 +26,7 @@ class User(models.Model):
         return d
 
     def __str__(self):
-        return str(self.name) + ("医生" if self.role == 1 else "患者")
+        return str(self.name) + ("[医生]" if self.role == 1 else "[患者]") + self.openid
 
 
 class Doctor(models.Model):
@@ -49,7 +49,7 @@ class Doctor(models.Model):
         return d
 
     def __str__(self):
-        return str("del" if self.wechat is None else self.wechat.name)
+        return str(self.id) + " " + str("del" if self.wechat is None else self.wechat.name)
 
 
 class Pictures(models.Model):
@@ -86,10 +86,12 @@ class History(models.Model):
         pics = PictureTable.objects.filter(history=self)
         pics = [x.pic.id for x in pics]
         d.update({"pics": pics})
+        if self.doctor is not None:
+            d.update({"state": Accept.objects.get(history=self, doctor=self.doctor).finish})
         return d
 
     def __str__(self):
-        return "{}: {}".format(self.patient.name, self.ill)
+        return "{} {}: {}".format(self.id, self.patient.name, self.ill)
 
 
 class PictureTable(models.Model):
