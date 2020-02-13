@@ -343,3 +343,14 @@ def statistic(request):
          "docname": docname, "totalcured": totalcured,
          "mycured": mycured, "myseat": myseat, "myscore": me.credits
          })
+
+
+def patient_detail(request):
+    pid = request.GET.get('pid', None)
+    if pid is None:
+        return err("no pid")
+    try:
+        user = User.objects.get(openid=pid)
+        return JsonResponse(user.json())
+    except User.DoesNotExist:
+        return err("invalid pid")
