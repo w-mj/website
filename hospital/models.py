@@ -91,6 +91,9 @@ class History(models.Model):
             'diag_time': None if self.diag_time is None else dt.strftime("%Y-%m-%d %H:%M:%S"),
             'rank': self.rank
         }
+        pics = PictureTable.objects.filter(history=self)
+        pics = [x.pic.id for x in pics]
+        d.update({"pics": pics})
         return d
 
     def __str__(self):

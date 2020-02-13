@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from time import time
 from collections import Counter
 
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage
 from django.db.models import Count
 from django.http import HttpResponseNotFound, HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -142,9 +142,12 @@ def get_patients(request):
             return err("id={} is not a doctor".format(did))
 
         rank = doctor.rank
-        patients = History.objects.filter(rank=rank, doctor=None)
+        patients = History.objects.filter(rank=rank, doctor=None).order_by('-send_time')
     page = request.GET.get('page', 1)
-    patients = Paginator(patients, 10).page(page)
+    try:
+        patients = Paginator(patients, 10).page(page)
+    except EmptyPage:
+        patients = []
     return JsonResponse({"patients": [x.json() for x in patients]})
 
 
@@ -248,8 +251,11 @@ def rank_up_history(request):
 def get_patient_history(pid, page):
     try:
         patient = User.objects.get(openid=pid)
-        histories = History.objects.filter(patient=patient)
-        histories = Paginator(histories, 10).page(page)
+        histories = History.objects.filter(patient=patient).order_by("-send_time")
+        try:
+            histories = Paginator(histories, 10).page(page)
+        except EmptyPage:
+            histories = []
         return JsonResponse({"histories": [x.json() for x in histories]})
     except User.DoesNotExist:
         return err("invalid patient id")
@@ -259,8 +265,11 @@ def get_doctor_history(did, page):
     try:
         doc_user = User.objects.get(openid=did)
         doctor = Doctor.objects.get(wechat=doc_user)
-        histories = Accept.objects.filter(doctor=doctor)
-        histories = Paginator(histories, 10).page(page)
+        histories = Accept.objects.filter(doctor=doctor).order_by("-send_time")
+        try:
+            histories = Paginator(histories, 10).page(page)
+        except EmptyPage:
+            histories = []
         return JsonResponse({"histories": [dict(x.history.json(), **{'state': x.finish}) for x in histories]})
     except Doctor.DoesNotExist:
         return err("{} is not a doctor".format(did))
