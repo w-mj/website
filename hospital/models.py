@@ -20,7 +20,8 @@ class User(models.Model):
             'gender': self.gender,
             'age': self.age,
             'location': self.location,
-            'phone': self.phone
+            'phone': self.phone,
+            'role': self.role
         }
         return d
 
@@ -54,15 +55,6 @@ class Doctor(models.Model):
 class Pictures(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     pic = models.ImageField()
-
-
-class Message(models.Model):
-    id = models.AutoField(primary_key=True, auto_created=True)
-    uuid = models.UUIDField(auto_created=True, default=uuid.uuid4)
-    time = models.DateTimeField()
-    sender = models.TextField(db_index=True)
-    receiver = models.TextField(db_index=True)
-    message = models.TextField()
 
 
 class History(models.Model):
@@ -116,3 +108,23 @@ class RankUPHistory(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.SET_NULL, null=True)
     history = models.ForeignKey(History, on_delete=models.SET_NULL, null=True)
     time = models.DateTimeField(auto_now=True)
+
+
+class Message(models.Model):
+    id = models.AutoField(primary_key=True, auto_created=True)
+    time = models.DateTimeField(auto_now=True)
+    sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    history = models.ForeignKey(History, on_delete=models.SET_NULL, null=True)
+    text = models.TextField()
+
+    def json(self):
+        st = self.time
+        st += timedelta(hours=+8)
+        d = {
+            'id': self.id,
+            'time': st.strftime("%Y-%m-%d %H:%M:%S"),
+            'sender': self.sender.openid,
+            'history': self.history.id,
+            'text': self.text
+        }
+        return d

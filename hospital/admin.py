@@ -18,11 +18,14 @@ class AcceptAdmin(admin.ModelAdmin):
 class RankUpHistoryAdmin(admin.ModelAdmin):
     list_display = ('doctor', 'history', 'time')
 
+class MessageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'history', 'sender', 'time', 'text')
+
 
 admin.site.register(User, UserAdmin)
 admin.site.register(Doctor, DoctorAdmin)
 admin.site.register(Pictures)
-admin.site.register(Message)
+admin.site.register(Message, MessageAdmin)
 admin.site.register(History, HistoryAdmin)
 admin.site.register(PictureTable)
 admin.site.register(Accept, AcceptAdmin)

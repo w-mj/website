@@ -365,3 +365,42 @@ def history_detail(request):
         return JsonResponse(his.json())
     except History.DoesNotExist:
         return err("invalid hid")
+
+@csrf_exempt
+def send_message(request):
+    try:
+        post_data = json.loads(request.body.decode('utf-8'))
+    except Exception:
+        return err("json data error.")
+    must_contains = ['wechat', 'hid', 'text']
+    for x in must_contains:
+        if x not in post_data:
+            return err("no {}".format(x))
+    hid = post_data['hid']
+    uid = post_data['wechat']
+    text = post_data['text']
+    try:
+        his = History.objects.get(id=hid)
+        user = User.objects.get(openid=uid)
+        msg = Message()
+        msg.history = his
+        msg.sender = user
+        msg.text = text
+        msg.save()
+        return JsonResponse({"success": True})
+    except History.DoesNotExist:
+        return err("invalid hid")
+    except User.DoesNotExist:
+        return err("invalid wechat")
+
+
+def get_message(request):
+    hid = request.GET.get('hid', None)
+    if hid is None:
+        return err("no hid")
+    try:
+        his = History.objects.get(id=hid)
+        msgs = Message.objects.filter(history=his).order_by("-time")
+        return JsonResponse({"messages": [x.json() for x in msgs]})
+    except History.DoesNotExist:
+        return err("invalid hid")
