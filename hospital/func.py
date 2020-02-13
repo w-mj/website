@@ -330,12 +330,12 @@ def statistic(request):
 
     doccured = Accept.objects.values("doctor").annotate(dcount=Count("doctor"))
     doccured = {x['doctor']: x['dcount'] for x in doccured}
-    dname = [(x.id, x.wechat.name) for x in Doctor.objects.all()]
+    dname = [(x.id, x.wechat.name if x.wechat else "医生未填写个人信息") for x in Doctor.objects.all()]
     doccured = {x[1]: doccured.get(x[0], 0) for x in dname}
     doccured = doccured.items()
     doccured = sorted(doccured, key=lambda x: x[1], reverse=True)
     (docname, totalcured) = zip(*doccured)
-    myseat = doccured.index((me.wechat.name, mycured)) + 1
+    myseat = doccured.index((me.wechat .name if me.wechat else "医生未填写个人信息", mycured)) + 1
     print(doccured)
     return JsonResponse(
         {"timedata": timedata, "dailycured": dailycured,
