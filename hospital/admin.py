@@ -16,7 +16,7 @@ class AcceptAdmin(admin.ModelAdmin):
     list_display = ('history', 'doctor', 'finish')
 
 class RankUpHistoryAdmin(admin.ModelAdmin):
-    list_display = ('doctor', 'history', 'time')
+    list_display = ('doctor', 'history', 'time', 'inc')
 
 class MessageAdmin(admin.ModelAdmin):
     list_display = ('id', 'history', 'sender', 'time', 'text')

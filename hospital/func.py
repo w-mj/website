@@ -278,10 +278,10 @@ def history(request):
     except User.DoesNotExist:
         return err("invalid doctor/patient id")
 
-    try:
-        histories = Paginator(histories, 10).page(page)
-    except EmptyPage:
-        histories = []
+    # try:
+    #     histories = Paginator(histories, 10).page(page)
+    # except EmptyPage:
+    #     histories = []
     dis = []
     for x in histories:
         msg = Message.objects.filter(history=x).order_by("-time")
