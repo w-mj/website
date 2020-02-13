@@ -404,3 +404,18 @@ def get_message(request):
         return JsonResponse({"messages": [x.json() for x in msgs]})
     except History.DoesNotExist:
         return err("invalid hid")
+
+
+def get_all_message(request):
+    uid = request.GET.get('wechat', None)
+    if uid is None:
+        return err("no wechat")
+    try:
+        user = User.objects.get(openid=uid)
+        if user.role == 2:
+            msgs = Message.objects.filter(history__patient=user).order_by("-time")
+        else:
+            msgs = Message.objects.filter(history__doctor__wechat_id=uid).order_by("-time")
+        return JsonResponse({"messages": [x.json() for x in msgs]})
+    except User.DoesNotExist:
+        return err("invalid wechat")
