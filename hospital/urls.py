@@ -16,5 +16,6 @@ urlpatterns = [
     path('adddoctor', func.add_doctor),
     path('statistic', func.statistic),
     path('login', xcx.login),
-    path('patientdetail', func.patient_detail)
+    path('patientdetail', func.patient_detail),
+    path('historydetail', func.history_detail)
 ]

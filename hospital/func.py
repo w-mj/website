@@ -354,3 +354,14 @@ def patient_detail(request):
         return JsonResponse(user.json())
     except User.DoesNotExist:
         return err("invalid pid")
+
+
+def history_detail(request):
+    hid = request.GET.get('hid', None)
+    if hid is None:
+        return err("no hid")
+    try:
+        his = History.objects.get(id=hid)
+        return JsonResponse(his.json())
+    except History.DoesNotExist:
+        return err("invalid hid")
