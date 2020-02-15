@@ -39,6 +39,7 @@ def picture(request):
             return HttpResponseNotFound()
         return HttpResponse(img.pic, content_type='image/png')
 
+
 @csrf_exempt
 def uploadill(request):
     try:
