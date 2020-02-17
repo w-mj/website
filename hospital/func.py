@@ -54,27 +54,41 @@ def uploadill(request):
         patient = User.objects.get(openid=post_data['wechat'])
     except User.DoesNotExist:
         return err("invalid wechat openid")
-
-    his = History()
+    if 'hid' in post_data:
+        try:
+            his = History.objects.get(id=post_data['hid'])
+        except History.DoesNotExist:
+            return err("invalid history id")
+    else:
+        his = History()
+        his.rank = 1
+        his.doctor = None
+        his.diag_time = None
     his.patient = patient
     his.ill = post_data['ill']
     his.info = post_data['info']
-    his.doctor = None
-    his.diag_time = None
     his.send_time = datetime.now(tz=timezone.utc)
-    his.rank = 1
     his.save()
 
-    if 'pics' in post_data:
-        for pic in post_data['pics']:
-            try:
-                p = Pictures.objects.get(id=pic)
-            except Pictures.DoesNotExist:
-                return JsonResponse({'error': 'picture id {} does not exist.'.format(pic)})
-            pt = PictureTable()
-            pt.pic = p
-            pt.history = his
-            pt.save()
+    pics = PictureTable.objects.filter(history=his)
+    pics = [x.pic_id for x in pics]
+    new_pics = post_data.get('pics', [])
+    pics = set(pics)
+    new_pics = set(new_pics)
+    to_del = pics - new_pics
+    to_add = new_pics - pics
+    for x in to_del:
+        p = PictureTable.objects.get(history=his, pic_id=x)
+        p.delete()
+    for x in to_add:
+        pt = PictureTable()
+        try:
+            picc = Pictures.objects.get(id=x)
+        except Pictures.DoesNotExist:
+            return JsonResponse({'error': 'picture id {} does not exist.'.format(x)})
+        pt.pic = picc
+        pt.history = his
+        pt.save()
 
     return JsonResponse({'success': True})
 
