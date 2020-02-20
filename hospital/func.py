@@ -105,7 +105,16 @@ def checkcode(request):
         return err("no wechat")
     code = post_data['code']
     try:
-        doctor = Doctor.objects.get(code=code)
+        if code == 'lowdoctor':
+            doctor = Doctor()
+            doctor.rank = 1
+            doctor.code = code
+        elif code == 'highdoctor':
+            doctor = Doctor()
+            doctor.rank = 2
+            doctor.code = code
+        else:
+            doctor = Doctor.objects.get(code=code)
         user = User.objects.get(openid=post_data['wechat'])
         user.role = 1
         user.save()
