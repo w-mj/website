@@ -7,6 +7,7 @@ def index(request):
         history = request.user.chat_history.all()
     else:
         history = []
+    print(request.META)
     return render(request, 'chatbot/index.html', {'current_user': request.user, 'history': history})
 
 

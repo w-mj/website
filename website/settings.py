@@ -29,7 +29,7 @@ SECRET_KEY = secrets.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True #socket.gethostname() != 'VM-125-218-ubuntu'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'fun.alphamj.cn', '123.206.57.166', 'chatbot.alphamj.cn']
+ALLOWED_HOSTS = ['127.0.0.1', 'fun.alphamj.cn', '123.206.57.166', 'chatbot.alphamj.cn', '192.168.1.100']
 
 
 # Application definition
